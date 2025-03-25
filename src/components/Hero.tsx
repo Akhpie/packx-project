@@ -220,7 +220,7 @@ export const Hero = () => {
               transition={{ duration: 1, ease: "easeOut" }}
               className="inline-block"
             >
-              <div className="text-white font-bold px-6 py-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500 mb-6 inline-block">
+              <div className="text-white font-bold px-6 py-2 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-800 mb-6 inline-block">
                 INNOVATE · PROTECT · SUSTAIN
               </div>
             </motion.div>

@@ -9,6 +9,21 @@ function App() {
   const [showAllBoxes, setShowAllBoxes] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if screen is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Standard mobile breakpoint
+    };
+
+    // Check on initial load
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Handle scroll event to hide/show the button
   useEffect(() => {
@@ -35,9 +50,9 @@ function App() {
         {/* Navbar will be present on all pages */}
         <Navbar />
 
-        {/* Enhanced demo button with show/hide functionality */}
+        {/* Enhanced demo button with show/hide functionality - hidden on mobile */}
         <div
-          className={`fixed top-20 right-4 z-40 transform duration-300 ease-in-out ${
+          className={`fixed top-20 right-4 z-40 transform duration-300 ease-in-out hidden md:block ${
             showButton
               ? "translate-x-0 opacity-100"
               : "translate-x-20 opacity-0"
