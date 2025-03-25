@@ -233,9 +233,9 @@ export const Hero = () => {
             className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight"
           >
             The Future of <br />
-            <h1 className="text-4xl font-extrabold tracking-tighter md:text-5xl lg:text-7xl z-auto">
-              <AuroraText>Packaging</AuroraText>
-            </h1>
+            <div className="text-4xl font-extrabold tracking-tighter md:text-5xl lg:text-7xl z-auto">
+              <AuroraText className="z-0">Packaging</AuroraText>
+            </div>
           </motion.h1>
 
           <motion.p
