@@ -233,8 +233,10 @@ export const Hero = () => {
             className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight"
           >
             The Future of <br />
-            <div className="text-4xl font-extrabold tracking-tighter md:text-5xl lg:text-7xl z-auto">
-              <AuroraText className="z-0">Packaging</AuroraText>
+            <div className="text-5xl font-extrabold tracking-tighter md:text-5xl lg:text-7xl z-auto">
+              <div className="bg-gradient-to-b from-blue-400 via-blue-400 to-purple-600 text-transparent bg-clip-text inline-block pb-4 pt-4">
+                Packaging
+              </div>
             </div>
           </motion.h1>
 
