@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 // Define navigation items
@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Handle scroll event to add transparency
   useEffect(() => {
@@ -40,6 +41,17 @@ const Navbar: React.FC = () => {
     return location.pathname === path;
   };
 
+  // Custom navigation handler that scrolls to top
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    // Ensure page scrolls to top on navigation
+    window.scrollTo(0, 0);
+    // Close mobile menu if open
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
@@ -51,9 +63,12 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="text-white text-2xl font-bold">
+        <button
+          onClick={() => handleNavigation("/")}
+          className="text-white text-2xl font-bold"
+        >
           PackX
-        </Link>
+        </button>
 
         {/* Mobile menu button */}
         <button
@@ -91,8 +106,8 @@ const Navbar: React.FC = () => {
             <ul className="flex space-x-1">
               {navItems.map((item) => (
                 <li key={item.path}>
-                  <Link
-                    to={item.path}
+                  <button
+                    onClick={() => handleNavigation(item.path)}
                     className={`px-4 py-2 rounded-full transition-colors duration-300 text-sm ${
                       isActive(item.path)
                         ? "bg-emerald-600 text-white"
@@ -100,7 +115,7 @@ const Navbar: React.FC = () => {
                     }`}
                   >
                     {item.name}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -120,17 +135,16 @@ const Navbar: React.FC = () => {
           <ul className="py-2">
             {navItems.map((item) => (
               <li key={item.path} className="px-4 py-2">
-                <Link
-                  to={item.path}
-                  className={`block px-3 py-2 rounded-lg ${
+                <button
+                  onClick={() => handleNavigation(item.path)}
+                  className={`block px-3 py-2 rounded-lg w-full text-left ${
                     isActive(item.path)
                       ? "bg-emerald-600 text-white"
                       : "text-gray-300 hover:bg-white/10"
                   }`}
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </button>
               </li>
             ))}
           </ul>

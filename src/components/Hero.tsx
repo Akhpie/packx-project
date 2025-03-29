@@ -10,6 +10,7 @@ import {
   Environment,
 } from "@react-three/drei";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Globe } from "./magicui/globe";
 import { AuroraText } from "./magicui/aurora-text";
 import { ShineBorder } from "./magicui/shine-border";
@@ -256,18 +257,18 @@ export const Hero = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <a
-              href="#solutions"
+            <Link
+              to="/solutions"
               className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-center font-medium shadow-lg"
             >
               Explore Solutions
-            </a>
-            <a
-              href="#sustainability"
+            </Link>
+            <Link
+              to="/sustainability"
               className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white border-2 border-white/40 rounded-lg transition-colors text-center font-medium shadow-lg"
             >
               Our Sustainability Commitment
-            </a>
+            </Link>
           </motion.div>
         </div>
       </div>

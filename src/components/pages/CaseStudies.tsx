@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
 
 interface CaseStudy {
   id: string;
@@ -195,91 +196,105 @@ const CaseStudies: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="bg-black text-white min-h-screen">
       {/* Hero section */}
-      <div className="relative py-20 overflow-hidden">
-        {/* Background layers - matching the hero section from Contact */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Gradient background that fades from top to bottom with completely black bottom */}
-          <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/30 via-blue-900/20 to-black"></div>
-
-          {/* Radial gradient overlay */}
-          <div className="absolute h-full w-full bg-[radial-gradient(circle_at_top,rgba(120,119,198,0.15),rgba(0,0,0,0))]"></div>
-
-          {/* Grid pattern with smooth fade to completely black */}
-          <div
-            className="absolute inset-0 opacity-25"
-            style={{
-              backgroundImage: `
-              linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-              backgroundSize: "40px 40px",
-              maskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-            }}
-          ></div>
-        </div>
-
-        {/* Header content */}
-        <div className="container mx-auto px-4 relative mb-16 mt-16">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl font-bold text-white mb-6"
-            >
-              Case Studies
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-xl text-gray-300"
-            >
+      <section className="pt-32 pb-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Our Case{" "}
+              <span className="bg-gradient-to-r from-emerald-400 to-teal-600 text-transparent bg-clip-text">
+                Studies
+              </span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mb-10">
               Explore our successful packaging solutions across various
               industries. See how we've helped businesses overcome challenges
               and achieve remarkable results.
-            </motion.p>
-          </div>
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Case Studies Grid - Visible when no study is selected */}
-        {!selectedStudy && (
-          <div className="container mx-auto px-4 pb-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {caseStudies.map((study, index) => (
-                <motion.div
-                  key={study.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="cursor-pointer"
-                  onClick={() => handleSelectStudy(study)}
-                >
-                  <Card className="h-full bg-gray-900/80 backdrop-blur-sm border border-gray-700 hover:border-emerald-500/50 transition-all duration-300 overflow-hidden">
-                    <div className="h-full flex flex-col">
-                      <div className="p-1 bg-gradient-to-r from-emerald-500/20 to-blue-500/20"></div>
-                      <CardContent className="p-6 flex-grow">
-                        <div className="flex justify-between items-start mb-4">
-                          <Badge className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border-none">
+      {/* Filter and case studies section */}
+      <section className="py-16 px-4 bg-gradient-to-b from-black to-emerald-950/30">
+        <div className="max-w-7xl mx-auto">
+          {/* Case Studies Filter */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <Tabs defaultValue="all" className="w-full">
+              <div className="flex justify-center mb-8">
+                <TabsList className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 p-1">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-emerald-600"
+                  >
+                    All
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="sustainability"
+                    className="data-[state=active]:bg-emerald-600"
+                  >
+                    Sustainability
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="food"
+                    className="data-[state=active]:bg-emerald-600"
+                  >
+                    Food & Beverage
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="ecommerce"
+                    className="data-[state=active]:bg-emerald-600"
+                  >
+                    E-Commerce
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="other"
+                    className="data-[state=active]:bg-emerald-600"
+                  >
+                    Other
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              {/* All case studies content */}
+              <TabsContent value="all">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {caseStudies.map((study, index) => (
+                    <motion.div
+                      key={study.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="cursor-pointer"
+                      onClick={() => handleSelectStudy(study)}
+                    >
+                      <Card className="overflow-hidden h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-emerald-500/50 transition-all duration-300">
+                        <CardContent className="p-6">
+                          <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                             {study.category}
                           </Badge>
-                        </div>
-                        <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">
-                          {study.title}
-                        </h3>
-                        <p className="text-gray-400 mb-4 line-clamp-3">
-                          {study.problem}
-                        </p>
-                        <div className="mt-auto pt-4 border-t border-gray-800">
-                          <p className="text-emerald-400 flex items-center space-x-1 text-sm">
-                            <span>Read full case study</span>
+                          <h3 className="text-xl font-bold text-white mb-3">
+                            {study.title}
+                          </h3>
+                          <p className="text-gray-300 mb-4 line-clamp-3">
+                            {study.problem}
+                          </p>
+                          <div className="flex items-center text-emerald-400">
+                            <span>Read case study</span>
                             <svg
-                              className="w-4 h-4 ml-1"
+                              className="w-4 h-4 ml-2"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -292,36 +307,102 @@ const CaseStudies: React.FC = () => {
                                 d="M14 5l7 7m0 0l-7 7m7-7H3"
                               ></path>
                             </svg>
-                          </p>
-                        </div>
-                      </CardContent>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </TabsContent>
+
+              {/* Filter by category content */}
+              {["sustainability", "food", "ecommerce", "other"].map(
+                (category) => (
+                  <TabsContent key={category} value={category}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {caseStudies
+                        .filter((study) =>
+                          category === "other"
+                            ? !["sustainability", "food", "ecommerce"].includes(
+                                study.category.toLowerCase()
+                              )
+                            : study.category.toLowerCase() === category
+                        )
+                        .map((study, index) => (
+                          <motion.div
+                            key={study.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            viewport={{ once: true }}
+                            className="cursor-pointer"
+                            onClick={() => handleSelectStudy(study)}
+                          >
+                            <Card className="overflow-hidden h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-emerald-500/50 transition-all duration-300">
+                              <CardContent className="p-6">
+                                <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                                  {study.category}
+                                </Badge>
+                                <h3 className="text-xl font-bold text-white mb-3">
+                                  {study.title}
+                                </h3>
+                                <p className="text-gray-300 mb-4 line-clamp-3">
+                                  {study.problem}
+                                </p>
+                                <div className="flex items-center text-emerald-400">
+                                  <span>Read case study</span>
+                                  <svg
+                                    className="w-4 h-4 ml-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                    ></path>
+                                  </svg>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </motion.div>
+                        ))}
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
+                  </TabsContent>
+                )
+              )}
+            </Tabs>
+          </motion.div>
+        </div>
+      </section>
 
-        {/* Detailed Case Study View - Visible when a study is selected */}
-        {selectedStudy && (
-          <div className="container mx-auto px-4 pb-20">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative max-w-4xl mx-auto bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl shadow-xl overflow-hidden"
-            >
-              {/* Top accent border */}
-              <div className="h-1 bg-gradient-to-r from-emerald-500 to-blue-500"></div>
-
-              {/* Close button */}
+      {/* Selected Case Study Modal */}
+      {selectedStudy && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                  {selectedStudy.category}
+                </Badge>
+                <h2 className="text-2xl md:text-3xl font-bold text-white">
+                  {selectedStudy.title}
+                </h2>
+              </div>
               <button
                 onClick={handleCloseDetailedView}
-                className="absolute top-4 right-4 p-2 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
-                aria-label="Close case study"
+                className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -335,112 +416,85 @@ const CaseStudies: React.FC = () => {
                   ></path>
                 </svg>
               </button>
+            </div>
 
-              <div className="p-8">
-                <Badge className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border-none mb-4">
-                  {selectedStudy.category}
-                </Badge>
-
-                <h2 className="text-3xl font-bold text-white mb-6">
-                  {selectedStudy.title}
-                </h2>
-
-                <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-800/70">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="solution">Solution</TabsTrigger>
-                    <TabsTrigger value="results">Results</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="overview" className="space-y-6">
-                    <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-                      <h3 className="text-xl font-semibold text-emerald-400 mb-3">
-                        Challenge
-                      </h3>
-                      <p className="text-gray-300">{selectedStudy.problem}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {selectedStudy.metrics.map((metric, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-gray-800/30 p-5 rounded-lg border border-gray-700/50 text-center"
-                        >
-                          <p className="text-gray-400 text-sm mb-1">
-                            {metric.label}
-                          </p>
-                          <p className="text-2xl font-bold text-emerald-400">
-                            {metric.value}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="solution" className="space-y-6">
-                    <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-                      <h3 className="text-xl font-semibold text-emerald-400 mb-3">
-                        Our Approach
-                      </h3>
-                      <p className="text-gray-300">{selectedStudy.solution}</p>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="results" className="space-y-6">
-                    <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-                      <h3 className="text-xl font-semibold text-emerald-400 mb-3">
-                        Outcome
-                      </h3>
-                      <p className="text-gray-300">{selectedStudy.outcome}</p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-
-                <div className="mt-8 flex justify-between items-center pt-6 border-t border-gray-800">
-                  <button
-                    onClick={handleCloseDetailedView}
-                    className="flex items-center text-gray-400 hover:text-white transition-colors"
-                  >
-                    <svg
-                      className="w-5 h-5 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                      ></path>
-                    </svg>
-                    Back to all case studies
-                  </button>
-
-                  <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors flex items-center">
-                    Request Similar Solution
-                    <svg
-                      className="w-4 h-4 ml-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+            <div className="space-y-6 mb-8">
+              <div>
+                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                  The Challenge
+                </h3>
+                <p className="text-gray-300">{selectedStudy.problem}</p>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </div>
+              <div>
+                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                  Our Solution
+                </h3>
+                <p className="text-gray-300">{selectedStudy.solution}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                  The Outcome
+                </h3>
+                <p className="text-gray-300">{selectedStudy.outcome}</p>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Key Metrics
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+              {selectedStudy.metrics.map((metric, index) => (
+                <div
+                  key={index}
+                  className="bg-black/30 border border-gray-800 rounded-lg p-4 text-center"
+                >
+                  <div className="text-2xl font-bold text-emerald-400 mb-1">
+                    {metric.value}
+                  </div>
+                  <div className="text-sm text-gray-400">{metric.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end mt-8">
+              <button
+                onClick={handleCloseDetailedView}
+                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 bg-gradient-to-t from-black to-emerald-950/30">
+        <div className="max-w-7xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to Transform Your Packaging?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Let's work together to create packaging solutions that enhance
+              your products, delight your customers, and align with your
+              sustainability goals.
+            </p>
+            <Link
+              to="/contact"
+              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors inline-block font-medium"
+            >
+              Contact Us Today
+            </Link>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 };

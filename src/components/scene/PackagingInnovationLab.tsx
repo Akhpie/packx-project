@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   OrbitControls,
   Environment,
@@ -9,6 +9,7 @@ import {
   Stars,
   Html,
   Text,
+  Float,
 } from "@react-three/drei";
 import {
   EffectComposer,
@@ -25,6 +26,8 @@ import {
   GeometricBox,
 } from "../boxes/index"; // Adjust this import path to match your file structure
 import { motion } from "framer-motion";
+import { Vector3 } from "three";
+import { Link, useNavigate } from "react-router-dom";
 
 // Package data with industry applications
 const packagingData = [
@@ -199,6 +202,33 @@ const BoxContainer = ({
         visible={hoveredBox === data.id}
       />
     </group>
+  );
+};
+
+const BottomUI = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    // Ensure page scrolls to top on navigation
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-6 z-10">
+      <button
+        onClick={() => handleNavigate("/contact")}
+        className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors shadow-lg"
+      >
+        Contact Sales
+      </button>
+      <button
+        onClick={() => handleNavigate("/case-studies")}
+        className="px-6 py-3 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30 rounded-lg transition-colors shadow-lg"
+      >
+        View Case Studies
+      </button>
+    </div>
   );
 };
 
@@ -416,20 +446,7 @@ const PackagingInnovationLab = () => {
             your specific product needs, brand identity, and sustainability
             goals.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a
-              href="#contact"
-              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-center"
-            >
-              Request Custom Solution
-            </a>
-            <a
-              href="#case-studies"
-              className="px-8 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-center"
-            >
-              View Case Studies
-            </a>
-          </div>
+          <BottomUI />
         </div>
       </div>
     </section>

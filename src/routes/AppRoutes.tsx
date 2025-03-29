@@ -5,11 +5,10 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../components/pages/Home";
 import Solutions from "../components/pages/Solutions";
 import PackagingInnovationLab from "../components/scene/PackagingInnovationLab";
-// import { Sustainability } from "./pages/Sustainability";
-// import { CaseStudies } from "./pages/CaseStudies";
-import Contact from "../components/pages/Contact";
+import Sustainability from "../components/pages/Sustainability";
 import CaseStudies from "../components/pages/CaseStudies";
-// import { NotFound } from "./pages/NotFound";
+import Contact from "../components/pages/Contact";
+import NotFound from "../components/pages/NotFound";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -17,10 +16,10 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<Home />} />
       <Route path="/solutions" element={<Solutions />} />
       <Route path="/innovation-lab" element={<PackagingInnovationLab />} />
-      {/* <Route path="/sustainability" element={<Sustainability />} /> */}
+      <Route path="/sustainability" element={<Sustainability />} />
       <Route path="/case-studies" element={<CaseStudies />} />
       <Route path="/contact" element={<Contact />} />
-      {/* <Route path="*" element={<NotFound />} /> */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

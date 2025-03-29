@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { Link, useNavigate } from "react-router-dom";
 import { BorderBeam } from "../magicui/border-beam";
 import { ShineBorder } from "../magicui/shine-border";
 
@@ -27,53 +28,15 @@ const SolutionCard: React.FC<SolutionCardProps> = ({
   image,
   delay = 0,
 }) => {
-  const ScrollToAnchor = () => {
-    useEffect(() => {
-      // Function to handle smooth scrolling
-      const handleAnchorClick = (e) => {
-        const target = e.target.closest("a");
-        if (!target) return;
-
-        // Check if the link is an anchor link
-        const href = target.getAttribute("href");
-        if (!href || !href.startsWith("#")) return;
-
-        // Prevent default anchor behavior
-        e.preventDefault();
-
-        // Get the target element
-        const targetId = href.substring(1);
-        const targetElement = document.getElementById(targetId);
-
-        if (targetElement) {
-          // Scroll smoothly to the target
-          targetElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-
-          // Update URL without reload
-          window.history.pushState(null, "", href);
-        }
-      };
-
-      // Add event listener to the document
-      document.addEventListener("click", handleAnchorClick);
-
-      // Clean up
-      return () => document.removeEventListener("click", handleAnchorClick);
-    }, []);
-
-    return null;
-  };
+  const navigate = useNavigate();
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: delay * 0.1 }}
-      className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden hover:shadow-xl hover:shadow-emerald-500/20 transition-all group"
+      transition={{ duration: 0.5, delay: delay * 0.1 }}
+      className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:shadow-xl hover:shadow-emerald-500/20 transition-all group"
     >
       <div className="h-64 overflow-hidden relative">
         <img
@@ -118,8 +81,13 @@ const SolutionCard: React.FC<SolutionCardProps> = ({
           ))}
         </ul>
         <div className="mt-6 pt-5 border-t border-gray-800">
-          <a
-            href="#contact"
+          <button
+            onClick={() => {
+              const contactSection = document.getElementById("contact");
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
             className="group inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors"
           >
             <span className="mr-2">Learn more</span>
@@ -139,7 +107,7 @@ const SolutionCard: React.FC<SolutionCardProps> = ({
                 ></path>
               </svg>
             </span>
-          </a>
+          </button>
         </div>
       </div>
     </motion.div>
@@ -162,16 +130,18 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
   logo,
   delay = 0,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: delay * 0.1 }}
-      className="flex flex-col md:flex-row gap-6 p-8 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl shadow-lg hover:shadow-emerald-500/10 transition-all"
+      transition={{ duration: 0.5, delay: delay * 0.1 }}
+      className="flex flex-col md:flex-row gap-6 p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-emerald-500/10 transition-all"
     >
       <div className="w-full md:w-1/4 flex justify-center items-center">
-        <div className="p-5 bg-gradient-to-br from-emerald-900/30 to-blue-900/30 rounded-lg border border-emerald-500/20 shadow-inner">
+        <div className="p-5 bg-gradient-to-br from-emerald-900/30 to-emerald-900/10 rounded-lg border border-emerald-500/20 shadow-inner">
           <img src={logo} alt={industry} className="w-24 h-24 object-contain" />
         </div>
       </div>
@@ -185,7 +155,7 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="flex items-start bg-gray-800/40 rounded-lg p-3 hover:bg-gray-800/60 transition-colors"
+              className="flex items-start bg-black/30 rounded-lg p-3 hover:bg-black/50 transition-colors"
             >
               <div className="flex-shrink-0 h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center mr-3 mt-0.5">
                 <svg
@@ -208,8 +178,8 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
           ))}
         </div>
         <div className="mt-6">
-          <a
-            href="#contact"
+          <button
+            onClick={() => navigate("/contact")}
             className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors inline-flex items-center shadow-lg hover:shadow-emerald-500/20 group"
           >
             Request Industry Solution
@@ -229,7 +199,7 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
                 ></path>
               </svg>
             </span>
-          </a>
+          </button>
         </div>
       </div>
     </motion.div>
@@ -237,6 +207,8 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
 };
 
 export const Solutions: React.FC = () => {
+  const navigate = useNavigate();
+
   // Data for solution cards
   const solutions = [
     {
@@ -359,251 +331,179 @@ export const Solutions: React.FC = () => {
     },
   ];
 
+  const scrollToSection = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
-    <div className="bg-black min-h-screen">
-      {/* Unified design approach for both sections */}
-      <div className="relative">
-        {/* Shared background that spans both sections */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Single gradient background for both sections - darker, less green */}
-          <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/20 via-blue-950/30 to-black/95"></div>
-
-          {/* Single radial gradient that spans both sections - more subtle */}
-          <div className="absolute h-full w-full bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.05),rgba(0,0,0,0))]"></div>
-
-          {/* Single continuous grid pattern for both sections */}
-          <div
-            className="absolute inset-0 opacity-25"
-            style={{
-              backgroundImage: `
-          linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-        `,
-              backgroundSize: "50px 50px",
-              maskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 10%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0) 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 10%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,0) 100%)",
-            }}
-          ></div>
-        </div>
-
-        {/* Hero section - reduced padding */}
-        <div className="relative py-16">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-3xl mx-auto text-center"
-            >
-              <div className="mb-6 inline-block mt-16">
-                <span className="text-xs font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  Innovative Solutions
-                </span>
-              </div>
-              <h1 className="text-5xl font-bold text-white mb-6">
-                Packaging Solutions
-              </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 mx-auto mb-8"></div>
-              <p className="text-xl text-gray-300 mb-10">
-                Discover our comprehensive range of innovative packaging
-                solutions engineered for sustainability, protection, and brand
-                enhancement. Each solution is fully customizable to meet your
-                unique requirements.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <a
-                  href="#packaging-solutions"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element = document.getElementById(
-                      "packaging-solutions"
-                    );
-                    if (element) {
-                      element.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                      });
-                    }
-                  }}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors shadow-lg hover:shadow-emerald-500/20 group flex items-center"
-                >
-                  <span>Explore Solutions</span>
-                  <span className="ml-2 transform group-hover:translate-y-px transition-transform">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                      ></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  href="#industry-solutions"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element =
-                      document.getElementById("industry-solutions");
-                    if (element) {
-                      element.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                      });
-                    }
-                  }}
-                  className="px-6 py-3 bg-transparent hover:bg-white/10 text-white border border-emerald-500/30 rounded-lg transition-colors flex items-center"
-                >
-                  <span>Industry-Specific Solutions</span>
-                  <span className="ml-2">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      ></path>
-                    </svg>
-                  </span>
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Enhanced "Packaging solutions" grid section - no separate background and reduced top padding */}
-        <section id="packaging-solutions" className="relative pt-12 pb-24">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="mb-16 text-center"
-            >
-              <span className="inline-block text-xs font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 mb-4">
-                Product Line
+    <div className="bg-black text-white min-h-screen">
+      {/* Hero section */}
+      <section className="pt-32 pb-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Packaging{" "}
+              <span className="bg-gradient-to-r from-emerald-400 to-teal-600 text-transparent bg-clip-text">
+                Solutions
               </span>
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Our Packaging Solutions
-              </h2>
-              <div className="w-20 h-1 bg-emerald-500/50 mx-auto mb-6"></div>
-              <p className="text-gray-300 max-w-3xl mx-auto">
-                From sustainable retail packaging to luxury premium boxes, we
-                offer a comprehensive range of solutions tailored to your
-                specific needs.
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {solutions.map((solution, index) => (
-                <SolutionCard
-                  key={index}
-                  title={solution.title}
-                  description={solution.description}
-                  features={solution.features}
-                  image={solution.image}
-                  delay={index}
-                />
-              ))}
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mb-10">
+              Discover our comprehensive range of innovative packaging solutions
+              engineered for sustainability, protection, and brand enhancement.
+              Each solution is fully customizable to meet your unique
+              requirements.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={() => scrollToSection("packaging-solutions")}
+                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors shadow-lg hover:shadow-emerald-500/20 group flex items-center"
+              >
+                <span>Explore Solutions</span>
+                <span className="ml-2 transform group-hover:translate-y-px transition-transform">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </span>
+              </button>
+              <button
+                onClick={() => scrollToSection("industry-solutions")}
+                className="px-6 py-3 bg-transparent hover:bg-white/10 text-white border border-white/20 rounded-lg transition-colors flex items-center"
+              >
+                <span>Industry-Specific Solutions</span>
+                <span className="ml-2">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    ></path>
+                  </svg>
+                </span>
+              </button>
             </div>
-
-            {/* Added feature counts summary */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
-            >
-              <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl p-6 text-center shadow-lg">
-                <div className="text-emerald-400 text-3xl font-bold mb-2">
-                  6+
-                </div>
-                <div className="text-white font-medium">Solution Lines</div>
-              </div>
-              <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl p-6 text-center shadow-lg">
-                <div className="text-emerald-400 text-3xl font-bold mb-2">
-                  24+
-                </div>
-                <div className="text-white font-medium">Material Options</div>
-              </div>
-              <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl p-6 text-center shadow-lg">
-                <div className="text-emerald-400 text-3xl font-bold mb-2">
-                  100%
-                </div>
-                <div className="text-white font-medium">Customizable</div>
-              </div>
-              <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-xl p-6 text-center shadow-lg">
-                <div className="text-emerald-400 text-3xl font-bold mb-2">
-                  3-6
-                </div>
-                <div className="text-white font-medium">Week Lead Time</div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-      </div>
-
-      {/* Enhanced "Industry-specific solutions" with better visuals */}
-      <section id="industry-solutions" className="py-24 relative">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/40"></div>
-
-          {/* Subtle grid pattern with fade from bottom */}
-          <div
-            className="absolute inset-0 opacity-15"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: "40px 40px",
-              maskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-              WebkitMaskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-            }}
-          ></div>
+          </motion.div>
         </div>
+      </section>
 
-        <div className="container mx-auto px-4 relative">
+      {/* Packaging solutions section */}
+      <section
+        id="packaging-solutions"
+        className="py-16 px-4 bg-gradient-to-b from-black to-emerald-950/30"
+      >
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+              Our Packaging Solutions
+            </h2>
+            <p className="text-gray-300 max-w-3xl mx-auto text-center">
+              From sustainable retail packaging to luxury premium boxes, we
+              offer a comprehensive range of solutions tailored to your specific
+              needs.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {solutions.map((solution, index) => (
+              <SolutionCard
+                key={index}
+                title={solution.title}
+                description={solution.description}
+                features={solution.features}
+                image={solution.image}
+                delay={index}
+              />
+            ))}
+          </div>
+
+          {/* Solution metrics */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mb-16 text-center"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
-            <span className="inline-block text-xs font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 mb-4">
-              By Industry
-            </span>
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="text-emerald-400 text-3xl font-bold mb-2">6+</div>
+              <div className="text-white font-medium">Solution Lines</div>
+            </div>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="text-emerald-400 text-3xl font-bold mb-2">
+                24+
+              </div>
+              <div className="text-white font-medium">Material Options</div>
+            </div>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="text-emerald-400 text-3xl font-bold mb-2">
+                100%
+              </div>
+              <div className="text-white font-medium">Customizable</div>
+            </div>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
+              <div className="text-emerald-400 text-3xl font-bold mb-2">
+                3-6
+              </div>
+              <div className="text-white font-medium">Week Lead Time</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Industry-specific solutions */}
+      <section id="industry-solutions" className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
               Industry-Specific Solutions
             </h2>
-            <div className="w-20 h-1 bg-emerald-500/50 mx-auto mb-6"></div>
-            <p className="text-gray-300 max-w-3xl mx-auto">
+            <p className="text-gray-300 max-w-3xl mx-auto text-center">
               We understand that different industries have unique packaging
               requirements. Explore our specialized solutions for various
               sectors.
             </p>
           </motion.div>
 
-          <div className="space-y-10">
+          <div className="space-y-8">
             {industries.map((industry, index) => (
               <IndustrySolution
                 key={index}
@@ -618,107 +518,34 @@ export const Solutions: React.FC = () => {
         </div>
       </section>
 
-      {/* Enhanced Call to action with more visual interest */}
-      <section className="py-24 relative">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0"></div>
-        </div>
-
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent to-gray-900/40"></div>
-
-          {/* Subtle grid pattern with fade from bottom */}
-          <div
-            className="absolute inset-0 opacity-15"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: "40px 40px",
-              maskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-              WebkitMaskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 85%)",
-            }}
-          ></div>
-        </div>
-
-        <div className="container mx-auto px-4 relative">
+      {/* CTA section */}
+      <section className="py-16 px-4 bg-gradient-to-t from-black to-emerald-950/30">
+        <div className="max-w-7xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto"
           >
-            <Card className="bg-gradient-to-r from-emerald-950/50 to-blue-950/10 rounded-2xl border-emerald-950/80 shadow-xl backdrop-blur-lg">
-              <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
-              <CardHeader className="text-center pb-0">
-                <div className="flex justify-center mb-4">
-                  <span className="inline-block text-xs font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-900/20 px-3 py-1 rounded-full border border-emerald-500/30">
-                    Custom Projects
-                  </span>
-                </div>
-                <CardTitle className="text-4xl font-bold text-white mb-4">
-                  Need a Custom Solution?
-                </CardTitle>
-                <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 mx-auto mb-6"></div>
-              </CardHeader>
-
-              <CardContent className="text-center">
-                <CardDescription className="text-gray-200 max-w-2xl mx-auto mb-8 mt-4 text-lg">
-                  Our packaging experts can help you design the perfect solution
-                  for your specific product needs, brand identity, and
-                  sustainability goals.
-                </CardDescription>
-              </CardContent>
-
-              <CardFooter className="flex flex-wrap justify-center gap-6">
-                <a
-                  href="/contact"
-                  className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg duration-300 inline-flex items-center shadow-lg hover:shadow-emerald-500/30 group"
-                >
-                  <span className="mr-2">Request Custom Quote</span>
-                  <span className="transform group-hover:translate-x-1 transition-transform">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      ></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  href="#contact"
-                  className="px-8 py-4 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-lg transition-colors inline-flex items-center"
-                >
-                  <span className="mr-2">Talk to an Expert</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    ></path>
-                  </svg>
-                </a>
-              </CardFooter>
-              {/* <BorderBeam duration={8} size={300} /> */}
-            </Card>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Need a Custom Solution?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Our packaging experts can help you design the perfect solution for
+              your specific product needs, brand identity, and sustainability
+              goals.
+            </p>
+            <button
+              onClick={() => {
+                navigate("/contact");
+                // Ensure page scrolls to top on navigation
+                window.scrollTo(0, 0);
+              }}
+              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors inline-block font-medium"
+            >
+              Request Custom Quote
+            </button>
           </motion.div>
         </div>
       </section>
