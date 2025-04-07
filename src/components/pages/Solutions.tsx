@@ -12,10 +12,10 @@ import { Link, useNavigate } from "react-router-dom";
 import clearViewImg from "../../assets/images/clear view box.png";
 import ecoFlexImg from "../../assets/images/ecoflex box.png";
 import flexiGridImg from "../../assets/images/Flexi Grid Box.png";
-import heritageImg from "../../assets/images/heritage box.png";
-import vitalEdgeImg from "../../assets/images/vital edge box.png";
-import terraCoreImg from "../../assets/images/terra core box.png";
-import spectraPackImg from "../../assets/images/spectra pack box.png";
+import heritageImg from "../../assets/images/Heritage Box.png";
+import vitalEdgeImg from "../../assets/images/Vital Edge Box.png";
+import terraCoreImg from "../../assets/images/Terra Core Box.png";
+import spectraPackImg from "../../assets/images/Spectra pack box.png";
 
 // Enhanced Solution card with more visual elements
 interface SolutionCardProps {
