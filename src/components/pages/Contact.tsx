@@ -711,7 +711,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, delay = 0 }) => {
       >
         <span className="text-white font-medium">{question}</span>
         <svg
-          className={`w-5 h-5 text-emerald-400 transform transition-transform ${
+          className={`w-5 h-5 text-emerald-400 transform transition-transform duration-300 ${
             isOpen ? "rotate-180" : ""
           }`}
           fill="none"
@@ -728,11 +728,22 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, delay = 0 }) => {
         </svg>
       </button>
 
-      {isOpen && (
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: isOpen ? "auto" : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+        transition={{
+          height: { duration: 0.3, ease: "easeInOut" },
+          opacity: { duration: 0.2, ease: "easeInOut" },
+        }}
+        className="overflow-hidden"
+      >
         <div className="p-4 bg-gray-800/40 rounded-b-lg mt-1 text-gray-300">
           {answer}
         </div>
-      )}
+      </motion.div>
     </motion.div>
   );
 };

@@ -15,6 +15,7 @@ import { Globe } from "./magicui/globe";
 import { AuroraText } from "./magicui/aurora-text";
 import { ShineBorder } from "./magicui/shine-border";
 import { Card, CardHeader } from "./ui/card";
+import { Meteors } from "./magicui/meteors";
 
 // Animated grid for the floor
 const AnimatedGrid = () => {
@@ -166,47 +167,17 @@ export const Hero = () => {
       className="relative h-screen max-full bg-black overflow-hidden"
       ref={containerRef}
     >
+      <Meteors
+        number={25}
+        color="#00ff88"
+        tailLength={120}
+        sizeMin={0.8}
+        sizeMax={2}
+        minDuration={4}
+        maxDuration={12}
+      />
       {/* 3D background canvas */}
-      {/* <div className="absolute inset-0">
-        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 10], fov: 50 }}>
-          <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            rotateSpeed={0.5}
-          />
-
-          <color attach="background" args={["#000000"]} />
-          <fog attach="fog" args={["#000000", 5, 50]} />
-
-          <Environment preset="night" />
-
-          <ambientLight intensity={0.2} />
-          <spotLight
-            position={[10, 10, 10]}
-            angle={0.15}
-            penumbra={1}
-            intensity={1}
-            castShadow
-          />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} />
-
-
-          <Particles count={800} />
-          <Stars
-            radius={100}
-            depth={50}
-            count={5000}
-            factor={4}
-            saturation={0}
-            fade
-            speed={1}
-          />
-          <AnimatedGrid />
-
-        </Canvas>
-      </div> */}
-      <Globe className="top-80 opacity-85 w-full max-w-[1200px]" />
+      <Globe className="top-60 opacity-85 w-full max-w-[1200px]" />
 
       {/* Main hero content with parallax effect */}
       <div

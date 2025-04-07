@@ -267,7 +267,7 @@ export const ProductViewer = () => {
                 <Stars radius={50} depth={50} count={1000} factor={4} />
                 <EffectComposer>
                   <Bloom
-                    intensity={1}
+                    intensity={0}
                     luminanceThreshold={0.6}
                     luminanceSmoothing={0.9}
                   />

@@ -15,24 +15,30 @@ const GLOBE_CONFIG: COBEOptions = {
   devicePixelRatio: 2,
   phi: 0,
   theta: 0.3,
-  dark: 1.1,
-  diffuse: 0.5, // Moderate diffuse
-  mapSamples: 16000,
-  mapBrightness: 0.65, // Reduced a bit for better text contrast
-  baseColor: [1, 1, 1],
-  markerColor: [251 / 255, 100 / 255, 21 / 255],
-  glowColor: [0.8, 0.8, 0.6], // Reduced glow intensity
+  dark: 1.0,
+  diffuse: 0.7, // Increased diffuse for better light distribution
+  mapSamples: 30000, // Increased map samples for more detail
+  mapBrightness: 0.75, // Increased brightness
+  baseColor: [0.1, 0.5, 0.3], // Added slight green tint to base
+  markerColor: [0.0, 0.9, 0.6], // Changed to emerald green to match theme
+  glowColor: [0.1, 0.8, 0.5], // Made glow more emerald to match sustainability theme
   markers: [
-    { location: [14.5995, 120.9842], size: 0.03 },
-    { location: [19.076, 72.8777], size: 0.1 },
-    { location: [23.8103, 90.4125], size: 0.05 },
-    { location: [30.0444, 31.2357], size: 0.07 },
-    { location: [39.9042, 116.4074], size: 0.08 },
-    { location: [-23.5505, -46.6333], size: 0.1 },
-    { location: [19.4326, -99.1332], size: 0.1 },
-    { location: [40.7128, -74.006], size: 0.1 },
-    { location: [34.6937, 135.5022], size: 0.05 },
-    { location: [41.0082, 28.9784], size: 0.06 },
+    // Strategic global distribution of sustainable packaging markets
+    { location: [14.5995, 120.9842], size: 0.05 }, // Manila
+    { location: [19.076, 72.8777], size: 0.08 }, // Mumbai
+    { location: [23.8103, 90.4125], size: 0.05 }, // Dhaka
+    { location: [30.0444, 31.2357], size: 0.07 }, // Cairo
+    { location: [39.9042, 116.4074], size: 0.1 }, // Beijing
+    { location: [-23.5505, -46.6333], size: 0.1 }, // São Paulo
+    { location: [19.4326, -99.1332], size: 0.08 }, // Mexico City
+    { location: [40.7128, -74.006], size: 0.12 }, // New York
+    { location: [34.6937, 135.5022], size: 0.09 }, // Osaka
+    { location: [41.0082, 28.9784], size: 0.07 }, // Istanbul
+    { location: [51.5074, -0.1278], size: 0.11 }, // London
+    { location: [48.8566, 2.3522], size: 0.09 }, // Paris
+    { location: [-33.8688, 151.2093], size: 0.08 }, // Sydney
+    { location: [55.7558, 37.6173], size: 0.09 }, // Moscow
+    { location: [1.3521, 103.8198], size: 0.07 }, // Singapore
   ],
 };
 
@@ -103,13 +109,13 @@ export function Globe({
   return (
     <div
       className={cn(
-        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[800px] z-10", // Added z-10 to keep it below text content
+        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[800px] z-0 opacity-60", // Further reduced opacity
         className
       )}
     >
       <canvas
         className={cn(
-          "size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
+          "size-full opacity-0 transition-opacity duration-1000 [contain:layout_paint_size]" // Increased duration for smoother fade-in
         )}
         ref={canvasRef}
         onPointerDown={(e) => {

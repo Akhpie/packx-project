@@ -9,8 +9,13 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { BorderBeam } from "../magicui/border-beam";
-import { ShineBorder } from "../magicui/shine-border";
+import clearViewImg from "../../assets/images/clear view box.png";
+import ecoFlexImg from "../../assets/images/ecoflex box.png";
+import flexiGridImg from "../../assets/images/Flexi Grid Box.png";
+import heritageImg from "../../assets/images/heritage box.png";
+import vitalEdgeImg from "../../assets/images/vital edge box.png";
+import terraCoreImg from "../../assets/images/terra core box.png";
+import spectraPackImg from "../../assets/images/spectra pack box.png";
 
 // Enhanced Solution card with more visual elements
 interface SolutionCardProps {
@@ -221,7 +226,7 @@ export const Solutions: React.FC = () => {
         "Embossing Capabilities",
         "Retail-Ready Design",
       ],
-      image: "/images/solutions/eco-retail.jpg",
+      image: ecoFlexImg,
     },
     {
       title: "Heritage™ Luxury Packaging",
@@ -233,7 +238,7 @@ export const Solutions: React.FC = () => {
         "Custom Inserts",
         "Magnetic Closures",
       ],
-      image: "/images/solutions/luxury.jpg",
+      image: heritageImg,
     },
     {
       title: "ClearView™ Display Solutions",
@@ -245,7 +250,7 @@ export const Solutions: React.FC = () => {
         "UV Protection",
         "Custom Molding",
       ],
-      image: "/images/solutions/clear-view.jpg",
+      image: clearViewImg,
     },
     {
       title: "SpectraPack™ Interactive Series",
@@ -257,7 +262,7 @@ export const Solutions: React.FC = () => {
         "Color-Shifting Elements",
         "Anti-Counterfeit Features",
       ],
-      image: "/images/solutions/interactive.jpg",
+      image: spectraPackImg,
     },
     {
       title: "TerraCore™ Sustainable Series",
@@ -269,7 +274,7 @@ export const Solutions: React.FC = () => {
         "Natural Finish Options",
         "Carbon Offset Program",
       ],
-      image: "/images/solutions/sustainable.jpg",
+      image: terraCoreImg,
     },
     {
       title: "VitalEdge™ Tech Packaging",
@@ -281,7 +286,7 @@ export const Solutions: React.FC = () => {
         "Minimalist Design",
         "Cable Management",
       ],
-      image: "/images/solutions/tech.jpg",
+      image: vitalEdgeImg,
     },
   ];
 
@@ -299,7 +304,7 @@ export const Solutions: React.FC = () => {
         "Temperature resistance",
         "Custom windows for visibility",
       ],
-      logo: "/images/industries/food.svg",
+      logo: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1215&q=80",
     },
     {
       industry: "Cosmetics & Beauty",
@@ -313,7 +318,7 @@ export const Solutions: React.FC = () => {
         "Custom color matching",
         "Eco-friendly alternatives",
       ],
-      logo: "/images/industries/cosmetics.svg",
+      logo: "https://images.unsplash.com/photo-1599305090598-fe179d501227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
     },
     {
       industry: "E-Commerce",
@@ -327,7 +332,7 @@ export const Solutions: React.FC = () => {
         "Automated assembly compatible",
         "Letterbox-friendly options",
       ],
-      logo: "/images/industries/ecommerce.svg",
+      logo: "https://images.unsplash.com/photo-1627634777217-c864268db30f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     },
   ];
 
