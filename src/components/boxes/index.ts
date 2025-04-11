@@ -6,3 +6,4 @@ export { default as HolographicBox } from "./HolographicBox";
 export { default as WoodenBox } from "./WoodenBox";
 export { default as NeonBox } from "./NeonBox";
 export { default as GeometricBox } from "./GeometricBox";
+export { default as ScrollableBox } from "./ScrollableBox";

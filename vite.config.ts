@@ -45,4 +45,34 @@ export default defineConfig({
       },
     },
   },
+  // Added build optimizations
+  build: {
+    // Target modern browsers for better performance
+    target: "es2020",
+    // Enable minification and optimize chunks
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        // Remove console logs in production
+        drop_console: true,
+        // Aggressive optimizations
+        passes: 2,
+      },
+    },
+    // Chunk size optimization
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        // Split vendor libraries for better caching
+        manualChunks: {
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "three-vendor": ["three", "@react-three/fiber", "@react-three/drei"],
+        },
+      },
+    },
+  },
+  // Reduce dev server verbosity
+  esbuild: {
+    logOverride: { "this-is-undefined-in-esm": "silent" },
+  },
 });

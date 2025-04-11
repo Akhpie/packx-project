@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -16,6 +16,271 @@ import heritageImg from "../../assets/images/Heritage Box.png";
 import vitalEdgeImg from "../../assets/images/Vital Edge Box.png";
 import terraCoreImg from "../../assets/images/Terra Core Box.png";
 import spectraPackImg from "../../assets/images/Spectra pack box.png";
+import interscrollImg from "../../assets/images/interscroll box.png";
+import { Canvas } from "@react-three/fiber";
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  Environment,
+  ContactShadows,
+} from "@react-three/drei";
+import {
+  Box,
+  LuxuryBox,
+  GlassBox,
+  HolographicBox,
+  WoodenBox,
+  NeonBox,
+  GeometricBox,
+  ScrollableBox,
+} from "../boxes/index";
+
+// Modal component for displaying 3D box
+interface BoxModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  boxData: {
+    title: string;
+    description: string;
+    features: string[];
+    component: React.ComponentType<any>;
+    color?: string;
+  };
+  navigate: (path: string) => void;
+}
+
+const BoxModal: React.FC<BoxModalProps> = ({
+  isOpen,
+  onClose,
+  boxData,
+  navigate,
+}) => {
+  if (!isOpen) return null;
+
+  const BoxComponent = boxData.component;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            transition={{ type: "spring", damping: 25 }}
+            className="bg-gradient-to-b from-gray-900 to-black border border-white/10 rounded-xl w-full max-w-5xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col md:flex-row h-[80vh] max-h-[700px]">
+              {/* 3D View Section */}
+              <div className="w-full md:w-3/5 h-1/2 md:h-full relative">
+                <Canvas className="w-full h-full">
+                  <PerspectiveCamera
+                    makeDefault
+                    position={[0, 0, 5]}
+                    fov={50}
+                  />
+                  <OrbitControls
+                    enableZoom={true}
+                    maxDistance={10}
+                    minDistance={2}
+                    autoRotate
+                    autoRotateSpeed={0.5}
+                  />
+                  <Environment preset="studio" />
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} intensity={1.5} />
+                  <spotLight position={[-10, -10, -10]} intensity={0.5} />
+                  <group position={[0, 0, 0]}>
+                    {boxData.title === "InterScroll™ Dynamic Package" ? (
+                      <ScrollableBox color="#4d61ff" />
+                    ) : boxData.title === "EcoFlex™ Retail Series" ? (
+                      <Box color="#8eac7a" />
+                    ) : boxData.title === "Heritage™ Luxury Packaging" ? (
+                      <LuxuryBox />
+                    ) : boxData.title === "ClearView™ Display Solutions" ? (
+                      <GlassBox />
+                    ) : boxData.title === "SpectraPack™ Interactive Series" ? (
+                      <HolographicBox />
+                    ) : boxData.title === "TerraCore™ Sustainable Series" ? (
+                      <WoodenBox />
+                    ) : boxData.title === "VitalEdge™ Tech Packaging" ? (
+                      <NeonBox />
+                    ) : boxData.title === "FlexiGrid™ Adaptive System" ? (
+                      <GeometricBox />
+                    ) : (
+                      <BoxComponent color={boxData.color} />
+                    )}
+                    <ContactShadows
+                      position={[0, -1.5, 0]}
+                      opacity={0.4}
+                      scale={5}
+                      blur={2.4}
+                    />
+                  </group>
+                </Canvas>
+
+                {/* Interaction info for ScrollableBox */}
+                {boxData.title === "InterScroll™ Dynamic Package" && (
+                  <div className="absolute top-4 left-0 right-0 flex justify-center">
+                    <div className="bg-black/70 backdrop-blur-sm p-3 rounded-lg border border-blue-400/30 flex items-center gap-3 shadow-lg shadow-blue-500/20">
+                      <div className="text-blue-400 text-sm">
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 19l-7-7 7-7"
+                            />
+                          </svg>
+                          <span>Hover and scroll to interact</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Scroll hint animation for InterScroll box */}
+                {boxData.title === "InterScroll™ Dynamic Package" && (
+                  <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center pointer-events-none">
+                    <div className="flex flex-col items-center">
+                      <div className="text-emerald-400 text-sm mb-2 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
+                        Try scrolling!
+                      </div>
+                      <div className="w-6 h-10 border-2 border-emerald-400/50 rounded-full flex items-start justify-center p-1">
+                        <div className="w-1 h-1 bg-emerald-400 rounded-full animate-bounce mt-1"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Details Section */}
+              <div className="w-full md:w-2/5 p-8 overflow-y-auto bg-black/40 modal-content">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-white">
+                    {boxData.title}
+                  </h2>
+                  <button
+                    onClick={onClose}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <p className="text-gray-300 mb-6">{boxData.description}</p>
+
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-white mb-3">
+                    Key Features
+                  </h3>
+                  <ul className="space-y-3">
+                    {boxData.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="flex-shrink-0 h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center mr-3 mt-0.5">
+                          <svg
+                            className="w-3.5 h-3.5 text-emerald-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M5 13l4 4L19 7"
+                            ></path>
+                          </svg>
+                        </div>
+                        <span className="text-gray-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {boxData.title === "InterScroll™ Dynamic Package" && (
+                  <div className="mt-4 p-4 border border-blue-400/20 rounded-lg bg-blue-900/10">
+                    <h4 className="text-blue-400 text-lg mb-2 flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      How To Interact
+                    </h4>
+                    <ol className="text-gray-300 list-decimal pl-5 space-y-1">
+                      <li>Hover your mouse over the box to activate</li>
+                      <li>
+                        Scroll <span className="text-blue-400">upward</span> to
+                        open
+                      </li>
+                      <li>
+                        Scroll <span className="text-blue-400">downward</span>{" "}
+                        to close
+                      </li>
+                    </ol>
+                  </div>
+                )}
+
+                <div className="mt-6 pt-6 border-t border-gray-800 flex justify-between">
+                  <button
+                    onClick={() => navigate("/contact")}
+                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors shadow-lg"
+                  >
+                    Request Quote
+                  </button>
+                  <button
+                    onClick={() => navigate("/innovation-lab")}
+                    className="px-6 py-3 border border-white/20 hover:bg-white/10 text-white rounded-lg transition-colors"
+                  >
+                    View in Lab
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 // Enhanced Solution card with more visual elements
 interface SolutionCardProps {
@@ -24,6 +289,9 @@ interface SolutionCardProps {
   features: string[];
   image: string;
   delay?: number;
+  component: React.ComponentType<any>;
+  color?: string;
+  onOpenModal: (boxData: any) => void;
 }
 
 const SolutionCard: React.FC<SolutionCardProps> = ({
@@ -32,6 +300,9 @@ const SolutionCard: React.FC<SolutionCardProps> = ({
   features,
   image,
   delay = 0,
+  component,
+  color,
+  onOpenModal,
 }) => {
   const navigate = useNavigate();
 
@@ -87,12 +358,9 @@ const SolutionCard: React.FC<SolutionCardProps> = ({
         </ul>
         <div className="mt-6 pt-5 border-t border-gray-800">
           <button
-            onClick={() => {
-              const contactSection = document.getElementById("contact");
-              if (contactSection) {
-                contactSection.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
+            onClick={() =>
+              onOpenModal({ title, description, features, component, color })
+            }
             className="group inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors"
           >
             <span className="mr-2">Learn more</span>
@@ -213,6 +481,17 @@ const IndustrySolution: React.FC<IndustrySolutionProps> = ({
 
 export const Solutions: React.FC = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBox, setSelectedBox] = useState<any>(null);
+
+  const onOpenModal = (boxData: any) => {
+    setSelectedBox(boxData);
+    setIsModalOpen(true);
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   // Data for solution cards
   const solutions = [
@@ -227,6 +506,8 @@ export const Solutions: React.FC = () => {
         "Retail-Ready Design",
       ],
       image: ecoFlexImg,
+      component: Box,
+      color: "#8eac7a",
     },
     {
       title: "Heritage™ Luxury Packaging",
@@ -239,6 +520,7 @@ export const Solutions: React.FC = () => {
         "Magnetic Closures",
       ],
       image: heritageImg,
+      component: LuxuryBox,
     },
     {
       title: "ClearView™ Display Solutions",
@@ -251,6 +533,7 @@ export const Solutions: React.FC = () => {
         "Custom Molding",
       ],
       image: clearViewImg,
+      component: GlassBox,
     },
     {
       title: "SpectraPack™ Interactive Series",
@@ -263,6 +546,7 @@ export const Solutions: React.FC = () => {
         "Anti-Counterfeit Features",
       ],
       image: spectraPackImg,
+      component: HolographicBox,
     },
     {
       title: "TerraCore™ Sustainable Series",
@@ -275,6 +559,7 @@ export const Solutions: React.FC = () => {
         "Carbon Offset Program",
       ],
       image: terraCoreImg,
+      component: WoodenBox,
     },
     {
       title: "VitalEdge™ Tech Packaging",
@@ -287,6 +572,21 @@ export const Solutions: React.FC = () => {
         "Cable Management",
       ],
       image: vitalEdgeImg,
+      component: NeonBox,
+    },
+    {
+      title: "InterScroll™ Dynamic Package",
+      description:
+        "Our most visually striking packaging solution with patent-pending dynamic opening mechanism. Provides exceptional unboxing experience and superior protection.",
+      features: [
+        "Interactive Reveal Technology",
+        "Tamper-Evident Design",
+        "Digital Content Integration",
+        "Premium Material Construction",
+      ],
+      image: interscrollImg,
+      component: ScrollableBox,
+      color: "#4d61ff",
     },
   ];
 
@@ -348,6 +648,16 @@ export const Solutions: React.FC = () => {
 
   return (
     <div className="bg-black text-white min-h-screen">
+      {/* Modal component */}
+      {selectedBox && (
+        <BoxModal
+          isOpen={isModalOpen}
+          onClose={onCloseModal}
+          boxData={selectedBox}
+          navigate={navigate}
+        />
+      )}
+
       {/* Hero section */}
       <section className="pt-32 pb-16 px-4">
         <div className="max-w-7xl mx-auto">
@@ -450,6 +760,9 @@ export const Solutions: React.FC = () => {
                 features={solution.features}
                 image={solution.image}
                 delay={index}
+                component={solution.component}
+                color={solution.color}
+                onOpenModal={onOpenModal}
               />
             ))}
           </div>
@@ -463,7 +776,7 @@ export const Solutions: React.FC = () => {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
           >
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">
-              <div className="text-emerald-400 text-3xl font-bold mb-2">6+</div>
+              <div className="text-emerald-400 text-3xl font-bold mb-2">7+</div>
               <div className="text-white font-medium">Solution Lines</div>
             </div>
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 text-center">

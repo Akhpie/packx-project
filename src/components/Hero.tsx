@@ -241,6 +241,8 @@ export const Hero = () => {
               Our Sustainability Commitment
             </Link>
           </motion.div>
+
+          {/* Call to action buttons */}
         </div>
       </div>
 

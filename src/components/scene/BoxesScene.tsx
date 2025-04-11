@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from "react";
+import React, { Suspense, useRef, memo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -6,14 +6,8 @@ import {
   PerspectiveCamera,
   ContactShadows,
   Grid,
-  Stars,
-  useHelper,
 } from "@react-three/drei";
-import {
-  EffectComposer,
-  Bloom,
-  ChromaticAberration,
-} from "@react-three/postprocessing";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import {
   Box,
   LuxuryBox,
@@ -25,38 +19,42 @@ import {
 } from "../boxes/index"; // Adjust this import path to match your file structure
 
 // Optional component to visualize lights for debugging
-const LightWithHelper = ({
-  position,
-  intensity,
-  color,
-  castShadow = false,
-}) => {
-  const lightRef = useRef();
-  // Uncomment the next line to see light helpers during development
-  // useHelper(lightRef, THREE.DirectionalLightHelper, 1, 'red');
+const LightWithHelper = memo(
+  ({ position, intensity, color, castShadow = false }) => {
+    const lightRef = useRef();
 
-  return (
-    <directionalLight
-      ref={lightRef}
-      position={position}
-      intensity={intensity}
-      color={color}
-      castShadow={castShadow}
-      shadow-mapSize-width={2048}
-      shadow-mapSize-height={2048}
-    />
-  );
-};
+    return (
+      <directionalLight
+        ref={lightRef}
+        position={position}
+        intensity={intensity}
+        color={color}
+        castShadow={castShadow}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+    );
+  }
+);
 
 // BoxContainer component ensures consistent positioning
-const BoxContainer = ({ children, position }) => {
+const BoxContainer = memo(({ children, position }) => {
   return (
     <group position={position}>
       {/* This ensures all boxes are positioned consistently relative to the grid */}
       <group position={[0, 1.25, 0]}>{children}</group>
     </group>
   );
-};
+});
+
+// Individual box components memoized to prevent unnecessary re-renders
+const MemoBox = memo(Box);
+const MemoLuxuryBox = memo(LuxuryBox);
+const MemoGlassBox = memo(GlassBox);
+const MemoHolographicBox = memo(HolographicBox);
+const MemoWoodenBox = memo(WoodenBox);
+const MemoNeonBox = memo(NeonBox);
+const MemoGeometricBox = memo(GeometricBox);
 
 const BoxesScene = () => {
   // Spacing between boxes
@@ -75,7 +73,7 @@ const BoxesScene = () => {
 
   return (
     <div className="w-full h-screen bg-black">
-      <Canvas shadows>
+      <Canvas shadows dpr={[1, 2]} performance={{ min: 0.5 }}>
         {/* Better camera position for viewing all boxes */}
         <PerspectiveCamera makeDefault position={[0, 5, 17]} fov={50} />
 
@@ -85,34 +83,34 @@ const BoxesScene = () => {
 
           {/* Boxes with consistent positioning */}
           <BoxContainer position={positions[0]}>
-            <Box color="#5599ff" scale={1.15} />
+            <MemoBox color="#5599ff" scale={1.15} />
           </BoxContainer>
 
           <BoxContainer position={positions[1]}>
-            <LuxuryBox scale={0.85} />
+            <MemoLuxuryBox scale={0.85} />
           </BoxContainer>
 
           <BoxContainer position={positions[2]}>
-            <GlassBox scale={1.1} />
+            <MemoGlassBox scale={1.1} />
           </BoxContainer>
 
           <BoxContainer position={positions[3]}>
-            <HolographicBox scale={1.05} />
+            <MemoHolographicBox scale={1.05} />
           </BoxContainer>
 
           <BoxContainer position={positions[4]}>
-            <WoodenBox scale={1.1} />
+            <MemoWoodenBox scale={1.1} />
           </BoxContainer>
 
           <BoxContainer position={positions[5]}>
-            <NeonBox scale={1.05} />
+            <MemoNeonBox scale={1.05} />
           </BoxContainer>
 
           <BoxContainer position={positions[6]}>
-            <GeometricBox scale={1.15} />
+            <MemoGeometricBox scale={1.15} />
           </BoxContainer>
 
-          {/* Improved ground plane */}
+          {/* Simplified ground plane */}
           <mesh
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0, 0, 0]}
@@ -126,17 +124,17 @@ const BoxesScene = () => {
             />
           </mesh>
 
-          {/* Better contact shadows */}
+          {/* Optimized contact shadows */}
           <ContactShadows
             position={[0, 0.01, 0]}
             opacity={0.6}
             scale={50}
             blur={2}
             far={10}
-            resolution={1024}
+            resolution={512} // Reduced from 1024 for better performance
           />
 
-          {/* Improved grid */}
+          {/* Simplified grid */}
           <Grid
             position={[0, 0.02, 0]}
             args={[100, 100]}
@@ -145,14 +143,13 @@ const BoxesScene = () => {
             cellColor="#3a64a8"
             sectionColor="#5389df"
             sectionSize={5}
-            fadeDistance={50}
+            fadeDistance={25} // Reduced from 50
             fadeStrength={1.5}
           />
 
-          {/* Stars in the background */}
-          <Stars radius={100} depth={50} count={5000} factor={4} />
+          {/* Removed Stars component for better performance */}
 
-          {/* Improved lighting */}
+          {/* Reduced number of lights */}
           <ambientLight intensity={0.4} />
 
           {/* Main light */}
@@ -163,35 +160,25 @@ const BoxesScene = () => {
             castShadow
           />
 
-          {/* Fill lights from other angles */}
+          {/* Single fill light instead of multiple */}
           <LightWithHelper
             position={[-8, 8, 8]}
             intensity={0.4}
             color="#8ef7ff"
           />
-          <LightWithHelper
-            position={[8, 6, -8]}
-            intensity={0.4}
-            color="#ffd0b0"
-          />
 
-          {/* Additional accent lights */}
-          <pointLight position={[-5, 5, 5]} intensity={0.3} color="#ff9900" />
-          <pointLight position={[5, 3, -5]} intensity={0.3} color="#0066ff" />
-
-          {/* Enhanced post-processing for better visuals */}
-          <EffectComposer>
+          {/* Simplified post-processing for better performance */}
+          <EffectComposer multisampling={0} disableNormalPass={true}>
             <Bloom
               luminanceThreshold={0.2}
-              intensity={0.8}
-              levels={9}
+              intensity={0.5} // Reduced from 0.8
+              levels={3} // Reduced from 9
               mipmapBlur
             />
-            <ChromaticAberration offset={[0.0005, 0.0005]} />
           </EffectComposer>
         </Suspense>
 
-        {/* Camera controls */}
+        {/* Camera controls - simplified */}
         <OrbitControls
           autoRotate
           autoRotateSpeed={0.3}

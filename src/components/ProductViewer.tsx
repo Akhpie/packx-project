@@ -16,13 +16,11 @@ import {
   WoodenBox,
   NeonBox,
   GeometricBox,
+  ScrollableBox,
 } from "./boxes/index";
-import { Suspense, useState } from "react";
-import {
-  EffectComposer,
-  Bloom,
-  ChromaticAberration,
-} from "@react-three/postprocessing";
+import { Suspense, useState, memo, useCallback } from "react";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { BoxProps } from "../types/BoxTypes";
 
 // Redefining products with industry-specific packaging solutions
 const products = [
@@ -140,28 +138,321 @@ const products = [
     industry: "E-commerce, Logistics, Varied Product Lines",
   },
   {
-    name: "Multi-Product Solutions",
-    component: ({ position }) => (
-      <group position={position}>
-        <Box position={[-2.0, 0, 0]} color="#8eac7a" scale={0.8} />
-        <WoodenBox position={[2.5, 0, 0]} scale={0.7} />
-        <NeonBox position={[0, 1.5, 0]} scale={0.7} />
-      </group>
-    ),
+    name: "InterScroll™ Dynamic Package",
+    component: ScrollableBox,
+    color: "#4d61ff",
     description:
-      "Custom multi-product packaging solutions designed for bundled offerings, gift sets, and subscription boxes. Our design team creates cohesive unboxing experiences with modular inserts.",
+      "Our most visually striking packaging solution with patent-pending dynamic opening mechanism. Provides exceptional unboxing experience and superior protection while turning heads at every unveiling. Integrated sensors enable product authentication and digital content access.",
     features: [
-      "Custom Inserts",
-      "Multi-Product Protection",
-      "Brand Cohesion",
-      "Subscription-Optimized",
+      "Interactive Reveal Technology",
+      "Tamper-Evident Design",
+      "Digital Content Integration",
+      "Premium Material Construction",
     ],
-    sustainability: 90,
+    sustainability: 88,
     caseStudy:
-      "Developed a complete packaging system for BeautyBox subscription service, improving fulfillment efficiency by 56% and reducing damage claims to near-zero",
-    industry: "Subscription Services, Gift Sets, Multi-Product Retailers",
+      'Implemented by LuxeTech for their flagship smartphone line, resulting in 84% reduction in counterfeit products and a 42% increase in customer engagement with digital manuals and setup guides. Customers rated it as "the most memorable unboxing experience" in industry surveys.',
+    industry:
+      "Luxury Electronics, Pharmaceuticals, Premium Cosmetics, Collectibles",
   },
 ];
+
+// Memoized 3D scene to prevent unnecessary re-renders
+interface Scene3DProps {
+  currentProduct: number;
+  viewingSustainability: boolean;
+  woodColor: string;
+  interiorColor: string;
+  trimColor: string;
+  gemColor: string;
+}
+
+const Scene3D = memo(
+  ({
+    currentProduct,
+    viewingSustainability,
+    woodColor,
+    interiorColor,
+    trimColor,
+    gemColor,
+  }: Scene3DProps) => {
+    const ProductComponent = products[currentProduct].component;
+
+    // Get the appropriate environment preset based on the product type
+    const getEnvironmentPreset = useCallback(() => {
+      if (currentProduct === 4) return "sunset"; // Wooden box
+      if (currentProduct === 5) return "night"; // Neon box
+      if (currentProduct === 2) return "studio"; // Glass box
+      if (currentProduct === 7) return "night"; // ScrollableBox
+      return "night"; // Default
+    }, [currentProduct]);
+
+    // Get the appropriate grid color based on the product type
+    const getGridColor = useCallback(() => {
+      if (currentProduct === 5) return "#5272d6"; // Tech blue for neon box
+      if (currentProduct === 4) return "#8B4513"; // Brown for wooden box
+      if (currentProduct === 0) return "#8eac7a"; // Green for eco box
+      if (currentProduct === 1) return "#c9a959"; // Gold for luxury box
+      if (currentProduct === 7) return "#4d61ff"; // Blue for scrollable box
+      return "#00ff88"; // Default
+    }, [currentProduct]);
+
+    return (
+      <Canvas>
+        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+        <OrbitControls
+          enableZoom={true}
+          maxDistance={10}
+          minDistance={2}
+          autoRotate
+          autoRotateSpeed={0.5}
+        />
+        <Environment preset={getEnvironmentPreset()} />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <spotLight position={[-10, -10, -10]} intensity={0.5} />
+        <Suspense fallback={null}>
+          {currentProduct === 1 ? (
+            <LuxuryBox
+              position={[0, 0, 0]}
+              woodColor={woodColor}
+              interiorColor={interiorColor}
+              trimColor={trimColor}
+              gemColor={gemColor}
+            />
+          ) : currentProduct === 7 ? (
+            <ScrollableBox position={[0, 0, 0]} color={products[7].color} />
+          ) : (
+            <ProductComponent position={[0, 0, 0]} />
+          )}
+          <ContactShadows
+            position={[0, -1.5, 0]}
+            opacity={0.4}
+            scale={5}
+            blur={2.4}
+          />
+          <Grid
+            position={[0, -2, 0]}
+            args={[10, 10]}
+            cellSize={0.5}
+            cellThickness={0.5}
+            cellColor={getGridColor()}
+            sectionSize={2}
+            fadeDistance={20}
+            fadeStrength={1}
+          />
+          {/* Reduced number of stars for better performance */}
+          <Stars radius={50} depth={50} count={500} factor={4} />
+          {/* Simplified post-processing with just essential effects */}
+          <EffectComposer>
+            <Bloom
+              intensity={0}
+              luminanceThreshold={0.6}
+              luminanceSmoothing={0.9}
+            />
+          </EffectComposer>
+        </Suspense>
+      </Canvas>
+    );
+  }
+);
+
+// Memoized product info component to prevent unnecessary re-renders
+interface ProductInfoProps {
+  currentProduct: number;
+  setCurrentProduct: (index: number) => void;
+  viewingSustainability: boolean;
+  setViewingSustainability: (value: boolean) => void;
+  woodColor: string;
+  setWoodColor: (color: string) => void;
+  interiorColor: string;
+  setInteriorColor: (color: string) => void;
+  trimColor: string;
+  setTrimColor: (color: string) => void;
+  gemColor: string;
+  setGemColor: (color: string) => void;
+}
+
+const ProductInfo = memo(
+  ({
+    currentProduct,
+    setCurrentProduct,
+    viewingSustainability,
+    setViewingSustainability,
+    woodColor,
+    setWoodColor,
+    interiorColor,
+    setInteriorColor,
+    trimColor,
+    setTrimColor,
+    gemColor,
+    setGemColor,
+  }: ProductInfoProps) => {
+    return (
+      <div className="space-y-8">
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-semibold text-white">
+              {products[currentProduct].name}
+            </h3>
+            <span className="px-3 py-1 bg-emerald-600/20 text-emerald-400 text-sm rounded-full">
+              {products[currentProduct].sustainability}% Sustainable
+            </span>
+          </div>
+
+          <p className="text-gray-400 mb-6">
+            {products[currentProduct].description}
+          </p>
+
+          <div className="mb-6">
+            <h4 className="text-white text-lg mb-3">Key Features</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {products[currentProduct].features.map((feature, i) => (
+                <div key={i} className="flex items-center text-gray-300">
+                  <svg
+                    className="w-4 h-4 mr-2 text-emerald-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {feature}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h4 className="text-white text-lg mb-2">Case Study</h4>
+            <div className="bg-white/5 p-4 rounded-lg">
+              <p className="text-gray-300 italic">
+                "{products[currentProduct].caseStudy}"
+              </p>
+            </div>
+          </div>
+
+          {currentProduct === 1 && (
+            <div className="mb-6">
+              <h4 className="text-white text-lg mb-3">Customize</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-gray-300 text-sm">Wood</label>
+                  <div className="flex space-x-2 mt-1">
+                    {["#5C0000", "#8B4513", "#3D2B1F", "#D4A76A"].map(
+                      (color) => (
+                        <button
+                          key={color}
+                          className={`w-6 h-6 rounded-full ${
+                            woodColor === color ? "ring-2 ring-white" : ""
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setWoodColor(color)}
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-gray-300 text-sm">Interior</label>
+                  <div className="flex space-x-2 mt-1">
+                    {["#800020", "#046307", "#000080", "#4B0082"].map(
+                      (color) => (
+                        <button
+                          key={color}
+                          className={`w-6 h-6 rounded-full ${
+                            interiorColor === color ? "ring-2 ring-white" : ""
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setInteriorColor(color)}
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-gray-300 text-sm">Trim</label>
+                  <div className="flex space-x-2 mt-1">
+                    {["#FFD700", "#C0C0C0", "#B76E79", "#CD7F32"].map(
+                      (color) => (
+                        <button
+                          key={color}
+                          className={`w-6 h-6 rounded-full ${
+                            trimColor === color ? "ring-2 ring-white" : ""
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setTrimColor(color)}
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-gray-300 text-sm">Gem</label>
+                  <div className="flex space-x-2 mt-1">
+                    {["#ff0000", "#50C878", "#0F52BA", "#9966CC"].map(
+                      (color) => (
+                        <button
+                          key={color}
+                          className={`w-6 h-6 rounded-full ${
+                            gemColor === color ? "ring-2 ring-white" : ""
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setGemColor(color)}
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="text-sm text-gray-500 mb-6">
+            <span className="font-medium">Ideal for: </span>
+            {products[currentProduct].industry}
+          </div>
+
+          <button className="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors">
+            Request Custom Quote
+          </button>
+        </div>
+
+        <div>
+          <h4 className="text-white text-lg mb-3">Explore Our Solutions</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {products.map((product, index) => (
+              <motion.button
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => setCurrentProduct(index)}
+                className={`p-3 rounded-lg text-center transition-all transform hover:scale-105 ${
+                  currentProduct === index
+                    ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20"
+                    : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 backdrop-blur-sm"
+                }`}
+              >
+                <span className="text-xs block">
+                  {product.name.split(" ")[0]}
+                </span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-sm text-emerald-400 italic">
+          All packaging solutions can be customized to your specific
+          requirements and brand guidelines.
+        </p>
+      </div>
+    );
+  }
+);
 
 export const ProductViewer = () => {
   const [currentProduct, setCurrentProduct] = useState(0);
@@ -170,25 +461,6 @@ export const ProductViewer = () => {
   const [interiorColor, setInteriorColor] = useState("#800020");
   const [trimColor, setTrimColor] = useState("#FFD700");
   const [gemColor, setGemColor] = useState("#ff0000");
-
-  const ProductComponent = products[currentProduct].component;
-
-  // Get the appropriate environment preset based on the product type
-  const getEnvironmentPreset = () => {
-    if (currentProduct === 4) return "sunset"; // Wooden box
-    if (currentProduct === 5) return "night"; // Neon box
-    if (currentProduct === 2) return "studio"; // Glass box
-    return "night"; // Default
-  };
-
-  // Get the appropriate grid color based on the product type
-  const getGridColor = () => {
-    if (currentProduct === 5) return "#5272d6"; // Tech blue for neon box
-    if (currentProduct === 4) return "#8B4513"; // Brown for wooden box
-    if (currentProduct === 0) return "#8eac7a"; // Green for eco box
-    if (currentProduct === 1) return "#c9a959"; // Gold for luxury box
-    return "#00ff88"; // Default
-  };
 
   return (
     <section className="py-20 relative overflow-hidden">
@@ -222,59 +494,92 @@ export const ProductViewer = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="h-[600px] bg-black/50 rounded-xl overflow-hidden backdrop-blur-sm border border-emerald-500/20 relative">
-            <Canvas>
-              <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-              <OrbitControls
-                enableZoom={true}
-                maxDistance={10}
-                minDistance={2}
-                autoRotate
-                autoRotateSpeed={0.5}
-              />
-              <Environment preset={getEnvironmentPreset()} />
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} intensity={1.5} />
-              <spotLight position={[-10, -10, -10]} intensity={0.5} />
-              <Suspense fallback={null}>
-                {/* <ProductComponent position={[0, 0, 0]} /> */}
-                {currentProduct === 1 ? (
-                  <LuxuryBox
-                    position={[0, 0, 0]}
-                    woodColor={woodColor}
-                    interiorColor={interiorColor}
-                    trimColor={trimColor}
-                    gemColor={gemColor}
-                  />
-                ) : (
-                  <ProductComponent position={[0, 0, 0]} />
-                )}
-                <ContactShadows
-                  position={[0, -1.5, 0]}
-                  opacity={0.4}
-                  scale={5}
-                  blur={2.4}
-                />
-                <Grid
-                  position={[0, -2, 0]}
-                  args={[10, 10]}
-                  cellSize={0.5}
-                  cellThickness={0.5}
-                  cellColor={getGridColor()}
-                  sectionSize={2}
-                  fadeDistance={30}
-                  fadeStrength={1}
-                />
-                <Stars radius={50} depth={50} count={1000} factor={4} />
-                <EffectComposer>
-                  <Bloom
-                    intensity={0}
-                    luminanceThreshold={0.6}
-                    luminanceSmoothing={0.9}
-                  />
-                  <ChromaticAberration offset={[0.002, 0.002]} />
-                </EffectComposer>
-              </Suspense>
-            </Canvas>
+            <Scene3D
+              currentProduct={currentProduct}
+              viewingSustainability={viewingSustainability}
+              woodColor={woodColor}
+              interiorColor={interiorColor}
+              trimColor={trimColor}
+              gemColor={gemColor}
+            />
+
+            {/* ScrollableBox instruction overlay */}
+            {currentProduct === 7 && !viewingSustainability && (
+              <div className="absolute top-4 left-0 right-0 flex justify-center">
+                <div className="bg-black/70 backdrop-blur-sm p-3 rounded-lg border border-blue-400/30 flex items-center gap-3 shadow-lg shadow-blue-500/20">
+                  <div className="text-blue-400 text-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      <span>Hover over box</span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      <span>Scroll up to open box</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      <span>Scroll down to close box</span>
+                    </div>
+                  </div>
+                  <div className="h-12 w-10 flex flex-col items-center justify-center border border-blue-400/30 rounded">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-blue-400 animate-bounce"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 11l5-5m0 0l5 5m-5-5v12"
+                      />
+                    </svg>
+                    <div className="w-3 h-5 border border-blue-400/50 rounded-full mt-1"></div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Sustainability overlay */}
             {viewingSustainability && (
@@ -312,168 +617,67 @@ export const ProductViewer = () => {
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-2xl font-semibold text-white">
-                  {products[currentProduct].name}
-                </h3>
-                <span className="px-3 py-1 bg-emerald-600/20 text-emerald-400 text-sm rounded-full">
-                  {products[currentProduct].sustainability}% Sustainable
-                </span>
-              </div>
+          <div>
+            <ProductInfo
+              currentProduct={currentProduct}
+              setCurrentProduct={setCurrentProduct}
+              viewingSustainability={viewingSustainability}
+              setViewingSustainability={setViewingSustainability}
+              woodColor={woodColor}
+              setWoodColor={setWoodColor}
+              interiorColor={interiorColor}
+              setInteriorColor={setInteriorColor}
+              trimColor={trimColor}
+              setTrimColor={setTrimColor}
+              gemColor={gemColor}
+              setGemColor={setGemColor}
+            />
 
-              <p className="text-gray-400 mb-6">
-                {products[currentProduct].description}
-              </p>
-
-              <div className="mb-6">
-                <h4 className="text-white text-lg mb-3">Key Features</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {products[currentProduct].features.map((feature, i) => (
-                    <div key={i} className="flex items-center text-gray-300">
-                      <svg
-                        className="w-4 h-4 mr-2 text-emerald-400"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h4 className="text-white text-lg mb-2">Case Study</h4>
-                <div className="bg-white/5 p-4 rounded-lg">
-                  <p className="text-gray-300 italic">
-                    "{products[currentProduct].caseStudy}"
-                  </p>
-                </div>
-              </div>
-
-              {currentProduct === 1 && (
-                <div className="mb-6">
-                  <h4 className="text-white text-lg mb-3">Customize</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-gray-300 text-sm">Wood</label>
-                      <div className="flex space-x-2 mt-1">
-                        {["#5C0000", "#8B4513", "#3D2B1F", "#D4A76A"].map(
-                          (color) => (
-                            <button
-                              key={color}
-                              className={`w-6 h-6 rounded-full ${
-                                woodColor === color ? "ring-2 ring-white" : ""
-                              }`}
-                              style={{ backgroundColor: color }}
-                              onClick={() => setWoodColor(color)}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-gray-300 text-sm">Interior</label>
-                      <div className="flex space-x-2 mt-1">
-                        {["#800020", "#046307", "#000080", "#4B0082"].map(
-                          (color) => (
-                            <button
-                              key={color}
-                              className={`w-6 h-6 rounded-full ${
-                                interiorColor === color
-                                  ? "ring-2 ring-white"
-                                  : ""
-                              }`}
-                              style={{ backgroundColor: color }}
-                              onClick={() => setInteriorColor(color)}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-gray-300 text-sm">Trim</label>
-                      <div className="flex space-x-2 mt-1">
-                        {["#FFD700", "#C0C0C0", "#B76E79", "#CD7F32"].map(
-                          (color) => (
-                            <button
-                              key={color}
-                              className={`w-6 h-6 rounded-full ${
-                                trimColor === color ? "ring-2 ring-white" : ""
-                              }`}
-                              style={{ backgroundColor: color }}
-                              onClick={() => setTrimColor(color)}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-gray-300 text-sm">Gem</label>
-                      <div className="flex space-x-2 mt-1">
-                        {["#ff0000", "#50C878", "#0F52BA", "#9966CC"].map(
-                          (color) => (
-                            <button
-                              key={color}
-                              className={`w-6 h-6 rounded-full ${
-                                gemColor === color ? "ring-2 ring-white" : ""
-                              }`}
-                              style={{ backgroundColor: color }}
-                              onClick={() => setGemColor(color)}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="text-sm text-gray-500 mb-6">
-                <span className="font-medium">Ideal for: </span>
-                {products[currentProduct].industry}
-              </div>
-
-              <button className="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors">
-                Request Custom Quote
-              </button>
-            </div>
-
-            <div>
-              <h4 className="text-white text-lg mb-3">Explore Our Solutions</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {products.map((product, index) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => setCurrentProduct(index)}
-                    className={`p-3 rounded-lg text-center transition-all transform hover:scale-105 ${
-                      currentProduct === index
-                        ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20"
-                        : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 backdrop-blur-sm"
-                    }`}
+            {currentProduct === 7 && (
+              <div className="mt-4 p-4 border border-blue-400/20 rounded-lg bg-blue-900/10 backdrop-blur-sm">
+                <h4 className="text-blue-400 text-lg mb-2 flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <span className="text-xs block">
-                      {product.name.split(" ")[0]}
-                    </span>
-                  </motion.button>
-                ))}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  How To Interact
+                </h4>
+                <p className="text-gray-300 mb-2">
+                  The InterScroll™ Dynamic Package features our revolutionary
+                  scroll-activated opening mechanism:
+                </p>
+                <ol className="text-gray-300 list-decimal pl-5 space-y-1">
+                  <li>Hover your mouse over the box to activate</li>
+                  <li>
+                    Scroll <span className="text-blue-400">upward</span> with
+                    your mouse wheel to watch the box open dramatically
+                  </li>
+                  <li>
+                    Scroll <span className="text-blue-400">downward</span> to
+                    close the box again
+                  </li>
+                  <li>
+                    The smooth, satisfying animation creates an unforgettable
+                    unboxing experience
+                  </li>
+                </ol>
+                <p className="text-gray-400 text-sm mt-2 italic">
+                  This same technology is integrated into all customer-facing
+                  digital experiences when featuring products using our
+                  InterScroll™ packaging.
+                </p>
               </div>
-            </div>
-
-            <p className="text-sm text-emerald-400 italic">
-              All packaging solutions can be customized to your specific
-              requirements and brand guidelines.
-            </p>
+            )}
           </div>
         </div>
       </div>

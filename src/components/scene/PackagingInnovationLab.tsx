@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef } from "react";
+import React, { Suspense, useState, useRef, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -24,9 +24,10 @@ import {
   WoodenBox,
   NeonBox,
   GeometricBox,
+  ScrollableBox,
 } from "../boxes/index"; // Adjust this import path to match your file structure
 import { motion } from "framer-motion";
-import { Vector3 } from "three";
+import { Vector3, Group, Vector2 } from "three";
 import { Link, useNavigate } from "react-router-dom";
 
 // Package data with industry applications
@@ -88,10 +89,36 @@ const packagingData = [
     sustainability: 93,
     industries: ["E-commerce", "Logistics", "Varied Products"],
   },
+  {
+    id: "interscroll",
+    name: "InterScroll™ Dynamic Package",
+    component: ScrollableBox,
+    description:
+      "Our most visually striking packaging solution with patent-pending dynamic opening mechanism. Provides exceptional unboxing experience and superior protection while turning heads at every unveiling. Integrated sensors enable product authentication and digital content access.",
+    sustainability: 88,
+    industries: [
+      "Pharmaceuticals",
+      "Luxury Electronics",
+      "Premium Cosmetics",
+      "Collectibles",
+    ],
+  },
 ];
 
 // Interactive annotation component for displaying details
-const PackageAnnotation = ({ position, label, details, visible }) => {
+interface PackageAnnotationProps {
+  position: [number, number, number];
+  label: string;
+  details: string;
+  visible: boolean;
+}
+
+const PackageAnnotation = ({
+  position,
+  label,
+  details,
+  visible,
+}: PackageAnnotationProps) => {
   if (!visible) return null;
 
   return (
@@ -107,7 +134,27 @@ const PackageAnnotation = ({ position, label, details, visible }) => {
   );
 };
 
+// Package data type
+interface PackageData {
+  id: string;
+  name: string;
+  component: React.ComponentType<any>;
+  color?: string;
+  description: string;
+  sustainability: number;
+  industries: string[];
+}
+
 // BoxContainer component for consistent positioning and interactions
+interface BoxContainerProps {
+  children: React.ReactNode;
+  position: [number, number, number];
+  data: PackageData;
+  hoveredBox: string | null;
+  setHoveredBox: React.Dispatch<React.SetStateAction<string | null>>;
+  showLabels: boolean;
+}
+
 const BoxContainer = ({
   children,
   position,
@@ -115,8 +162,8 @@ const BoxContainer = ({
   hoveredBox,
   setHoveredBox,
   showLabels,
-}) => {
-  const groupRef = useRef();
+}: BoxContainerProps) => {
+  const groupRef = useRef<Group>(null!);
 
   // Add subtle hover effect and animation
   useFrame(() => {
@@ -215,7 +262,8 @@ const BottomUI = () => {
   };
 
   return (
-    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-6 z-10">
+    <>
+      {/* <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-6 z-10">
       <button
         onClick={() => handleNavigate("/contact")}
         className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors shadow-lg"
@@ -228,14 +276,34 @@ const BottomUI = () => {
       >
         View Case Studies
       </button>
-    </div>
+    </div> */}
+    </>
   );
 };
 
 const PackagingInnovationLab = () => {
-  const [hoveredBox, setHoveredBox] = useState(null);
+  const [hoveredBox, setHoveredBox] = useState<string | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState("All");
   const [showLabels, setShowLabels] = useState(true);
+  const [key, setKey] = useState(0); // Key to force Canvas remount
+
+  // Handle tab visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        // Reset hover state
+        setHoveredBox(null);
+        // Force Canvas remount to reset animations
+        setKey((prev) => prev + 1);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   // Spacing between boxes
   const spacing = 3.8;
@@ -273,12 +341,15 @@ const PackagingInnovationLab = () => {
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 py-10"
         >
-          <h2 className="text-4xl font-bold text-white mb-2">
-            Packaging Innovation Lab
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            Packaging{" "}
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-600 text-transparent bg-clip-text">
+              Innovation Lab
+            </span>
           </h2>
           <p className="text-gray-400 max-w-3xl mx-auto">
             Explore our complete range of innovative packaging solutions. Hover
@@ -306,8 +377,18 @@ const PackagingInnovationLab = () => {
 
         {/* 3D Canvas */}
         <div className="h-[700px] bg-black/50 rounded-xl overflow-hidden backdrop-blur-sm border border-emerald-500/20 relative">
-          <Canvas shadows>
-            <PerspectiveCamera makeDefault position={cameraPosition} fov={50} />
+          <Canvas key={key} shadows>
+            <PerspectiveCamera
+              makeDefault
+              position={
+                new Vector3(
+                  cameraPosition[0],
+                  cameraPosition[1],
+                  cameraPosition[2]
+                )
+              }
+              fov={50}
+            />
             <Suspense fallback={null}>
               <Environment preset="night" />
 
@@ -403,7 +484,11 @@ const PackagingInnovationLab = () => {
                   levels={9}
                   mipmapBlur
                 />
-                <ChromaticAberration offset={[0.0005, 0.0005]} />
+                <ChromaticAberration
+                  offset={new Vector2(0.0005, 0.0005)}
+                  radialModulation={false}
+                  modulationOffset={0}
+                />
               </EffectComposer>
             </Suspense>
 
@@ -417,6 +502,9 @@ const PackagingInnovationLab = () => {
               maxPolarAngle={Math.PI / 2.5}
               enablePan={false}
               target={[0, 2, 0]}
+              enableDamping
+              dampingFactor={0.05}
+              rotateSpeed={0.5}
             />
           </Canvas>
 

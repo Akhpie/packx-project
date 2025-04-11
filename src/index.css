@@ -6,14 +6,85 @@
   color-scheme: dark;
 }
 
+/* Enable smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: black;
   overflow-x: hidden;
+}
+
+/* Scroll animation for elements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-animate {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Custom Scrollbar - Emerald Theme */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.6);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #059669, #10b981);
+  border-radius: 8px;
+  border: 2px solid rgba(17, 24, 39, 0.6);
+  box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #10b981, #34d399);
+}
+
+/* Scrolling glow effect */
+html.is-scrolling ::-webkit-scrollbar-thumb {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
+  }
+}
+
+html.is-scrolling ::-webkit-scrollbar-thumb {
+  animation: pulse-glow 1.5s infinite;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 rgba(17, 24, 39, 0.6);
 }
 
 * {
@@ -50,8 +121,6 @@ body {
 .hover\:scale-102:hover {
   transform: scale(1.02);
 }
-
-
 
 @layer base {
   :root {
@@ -109,8 +178,6 @@ body {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -118,4 +185,25 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom scrollbars for specific elements */
+.modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: #10b981 rgba(17, 24, 39, 0.8);
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.8);
+  border-radius: 6px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #059669, #10b981);
+  border-radius: 6px;
+  border: 1px solid rgba(17, 24, 39, 0.8);
 }

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import BoxesScene from "./components/scene/BoxesScene";
+// Lazy load BoxesScene since it's a heavy 3D component
+const BoxesScene = lazy(() => import("./components/scene/BoxesScene"));
 import Footer from "./components/pages/Footer";
 import AppRoutes from "./routes/AppRoutes";
 import { Box, Boxes, Home } from "lucide-react";
@@ -100,7 +101,19 @@ function App() {
               </button>
             </div>
 
-            {showAllBoxes ? <BoxesScene /> : <AppRoutes />}
+            {showAllBoxes ? (
+              <Suspense
+                fallback={
+                  <div className="h-screen flex items-center justify-center text-white">
+                    Loading 3D Scene...
+                  </div>
+                }
+              >
+                <BoxesScene />
+              </Suspense>
+            ) : (
+              <AppRoutes />
+            )}
 
             {/* Footer (only shown when not in BoxesScene mode) */}
             {!showAllBoxes && <Footer />}
