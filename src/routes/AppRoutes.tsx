@@ -9,6 +9,7 @@ import Sustainability from "../components/pages/Sustainability";
 import CaseStudies from "../components/pages/CaseStudies";
 import Contact from "../components/pages/Contact";
 import NotFound from "../components/pages/NotFound";
+import Experience from "@/components/pages/Experience";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/sustainability" element={<Sustainability />} />
       <Route path="/case-studies" element={<CaseStudies />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/experience" element={<Experience />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

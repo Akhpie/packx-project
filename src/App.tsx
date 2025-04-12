@@ -70,36 +70,7 @@ function App() {
                   ? "translate-x-0 opacity-100"
                   : "translate-x-20 opacity-0"
               }`}
-            >
-              <button
-                onClick={() => setShowAllBoxes(!showAllBoxes)}
-                className="group relative overflow-hidden px-6 py-3 rounded-lg font-medium duration-300"
-              >
-                {/* Button background with gradient and glow effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-600 shadow-lg group-hover:shadow-emerald-500/50"></span>
-
-                {/* Subtle animated shine effect */}
-                <span className="absolute inset-0 opacity-0 group-hover:opacity-30 duration-500 bg-gradient-to-r from-transparent via-white to-transparent skew-x-[-45deg] translate-x-[-100%] group-hover:translate-x-[200%]"></span>
-
-                {/* Button content with icon */}
-                <span className="relative flex items-center text-white">
-                  {showAllBoxes ? (
-                    <>
-                      <Home className="mr-2" />
-                      Back to Main Site
-                    </>
-                  ) : (
-                    <>
-                      <Box className="mr-2" />
-                      Show All Boxes Demo
-                    </>
-                  )}
-                </span>
-
-                {/* Button border glow */}
-                <span className="absolute inset-0 rounded-lg border border-white/20 group-hover:border-white/40 duration-300"></span>
-              </button>
-            </div>
+            ></div>
 
             {showAllBoxes ? (
               <Suspense
