@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Environment, Stars, Text } from "@react-three/drei";
+import {
+  OrbitControls,
+  Environment,
+  Stars,
+  Text,
+  Html,
+} from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import { Home } from "lucide-react";
@@ -106,6 +112,7 @@ const GeometricBox: React.FC<{ position: [number, number, number] }> = ({
     <meshStandardMaterial color="#4682B4" roughness={0.4} metalness={0.6} />
   </mesh>
 );
+
 interface KeyState {
   forward: boolean;
   backward: boolean;
@@ -645,6 +652,168 @@ const BoxDisplay: React.FC = () => {
   );
 };
 
+// Add this interactive holographic interface component
+const HolographicInterface: React.FC = () => {
+  const { camera } = useThree();
+  const [isVisible, setIsVisible] = useState(false);
+  const centerPosition = new THREE.Vector3(0, 2, 10);
+  const activationDistance = 5;
+
+  useFrame(() => {
+    // Calculate distance from camera to center display
+    const distance = camera.position.distanceTo(centerPosition);
+
+    // Show interface when player is close enough
+    setIsVisible(distance < activationDistance);
+  });
+
+  if (!isVisible) return null;
+
+  return (
+    <group position={[0, 3.5, 10]} rotation={[0, 0, 0]}>
+      {/* Holographic frame */}
+      <mesh>
+        <planeGeometry args={[4, 2.5]} />
+        <meshPhysicalMaterial
+          color="#00ffff"
+          transparent
+          opacity={0.2}
+          emissive="#00ffff"
+          emissiveIntensity={0.5}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      {/* Holographic content using Html */}
+      <Html
+        transform
+        distanceFactor={8}
+        position={[0, 0, 0.1]}
+        style={{
+          width: "500px",
+          height: "300px",
+          padding: "20px",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          borderRadius: "10px",
+          border: "2px solid #00ffff",
+          color: "white",
+          fontFamily: "Arial, sans-serif",
+          pointerEvents: "auto",
+        }}
+      >
+        <div style={{ opacity: 1 }}>
+          <h2
+            style={{
+              color: "#00ffff",
+              textAlign: "center",
+              marginBottom: "15px",
+              textShadow: "0 0 5px #00ffff",
+            }}
+          >
+            PackX Premium Box Interface
+          </h2>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ flex: "1", marginRight: "10px" }}>
+              <h3 style={{ color: "#00ffaa", marginBottom: "5px" }}>
+                Box Specifications
+              </h3>
+              <ul
+                style={{
+                  fontSize: "14px",
+                  listStyleType: "none",
+                  padding: "0",
+                }}
+              >
+                <li>• Dimensions: 10 × 10 × 10 cm</li>
+                <li>• Material: Quantum Glass</li>
+                <li>• Durability: 98.7%</li>
+                <li>• Security: Level 5</li>
+                <li>• AI Integration: Enabled</li>
+              </ul>
+            </div>
+            <div style={{ flex: "1" }}>
+              <h3 style={{ color: "#00ffaa", marginBottom: "5px" }}>
+                Box Features
+              </h3>
+              <ul
+                style={{
+                  fontSize: "14px",
+                  listStyleType: "none",
+                  padding: "0",
+                }}
+              >
+                <li>• Holographic Display</li>
+                <li>• Quantum Lock</li>
+                <li>• Biometric Authentication</li>
+                <li>• Zero-G Stabilization</li>
+                <li>• Neural Interface</li>
+              </ul>
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: "20px",
+              textAlign: "center",
+              fontSize: "12px",
+              color: "#cccccc",
+            }}
+          >
+            <p>PackX - Secure your reality. Since 2024.</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "10px",
+              }}
+            >
+              <button
+                style={{
+                  backgroundColor: "#00ffaa",
+                  color: "black",
+                  border: "none",
+                  padding: "5px 15px",
+                  borderRadius: "5px",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                Box Details
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#00ffaa",
+                  color: "black",
+                  border: "none",
+                  padding: "5px 15px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Purchase
+              </button>
+            </div>
+          </div>
+        </div>
+      </Html>
+
+      {/* Holographic particles effect */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <mesh
+          key={`particle-${i}`}
+          position={[
+            (Math.random() - 0.5) * 4,
+            (Math.random() - 0.5) * 2.5,
+            (Math.random() - 0.5) * 0.5,
+          ]}
+        >
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshBasicMaterial color="#00ffff" transparent opacity={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
 // Controls overlay component
 interface ControlsOverlayProps {
   isVisible: boolean;
@@ -834,6 +1003,7 @@ const Experience: React.FC = () => {
         <FactorySetup />
         <BoxDisplay />
         <SpawnPlatform />
+        <HolographicInterface />
         <PlayerControls />
         <OrbitControls
           enableZoom={false}
