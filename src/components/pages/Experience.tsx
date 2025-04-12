@@ -666,7 +666,7 @@ const ControlsOverlay: React.FC<ControlsOverlayProps> = ({
         className="bg-black/70 backdrop-blur-md p-6 rounded-lg max-w-md text-white border border-white/20"
       >
         <h2 className="text-2xl font-bold mb-4 text-center text-emerald-400">
-          Welcome to the BoxX Factory
+          Welcome to the PackX Factory
         </h2>
         <p className="mb-4 text-center">
           You're about to enter a first-person view of our factory where we
