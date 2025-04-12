@@ -257,7 +257,7 @@ const CaseStudies: React.FC = () => {
                     Food & Beverage
                   </TabsTrigger>
                   <TabsTrigger
-                    value="ecommerce"
+                    value="e-commerce"
                     className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     E-Commerce
@@ -320,16 +320,18 @@ const CaseStudies: React.FC = () => {
               </TabsContent>
 
               {/* Filter by category content */}
-              {["sustainability", "food", "ecommerce", "other"].map(
+              {["sustainability", "food", "e-commerce", "other"].map(
                 (category) => (
                   <TabsContent key={category} value={category}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                       {caseStudies
                         .filter((study) =>
                           category === "other"
-                            ? !["sustainability", "food", "ecommerce"].includes(
-                                study.category.toLowerCase()
-                              )
+                            ? ![
+                                "sustainability",
+                                "food",
+                                "e-commerce",
+                              ].includes(study.category.toLowerCase())
                             : study.category.toLowerCase() === category
                         )
                         .map((study, index) => (
