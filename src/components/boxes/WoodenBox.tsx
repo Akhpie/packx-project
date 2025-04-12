@@ -22,15 +22,19 @@ export default function WoodenBox({ position = [0, 0, 0] }: BoxProps) {
 
   // Box scale animation
   const boxSpring = useSpring({
-    from: { scale: [0, 0, 0] },
-    to: { scale: [1, 1, 1] },
+    from: { scale: [0, 0, 0] as [number, number, number] },
+    to: { scale: [1, 1, 1] as [number, number, number] },
     config: { mass: 4, tension: 300, friction: 70 },
   });
 
   // Lid animation - slow, creaking
   const lidSpring = useSpring({
-    rotation: isOpen ? [MathUtils.degToRad(-110), 0, 0] : [0, 0, 0],
-    position: isOpen ? [0, 0.7, -0.45] : [0, 0.5, 0],
+    rotation: isOpen
+      ? ([MathUtils.degToRad(-110), 0, 0] as [number, number, number])
+      : ([0, 0, 0] as [number, number, number]),
+    position: isOpen
+      ? ([0, 0.7, -0.45] as [number, number, number])
+      : ([0, 0.5, 0] as [number, number, number]),
     config: { mass: 5, tension: 100, friction: 30 }, // Heavy, slow-moving lid
   });
 
@@ -48,7 +52,11 @@ export default function WoodenBox({ position = [0, 0, 0] }: BoxProps) {
   });
 
   return (
-    <animated.group ref={groupRef} scale={boxSpring.scale} position={position}>
+    <animated.group
+      ref={groupRef}
+      scale={boxSpring.scale as unknown as [number, number, number]}
+      position={position}
+    >
       <group>
         {/* Main wooden container */}
         <mesh scale={[1.3, 0.9, 1.1]} position={[0, 0, 0]}>
@@ -106,8 +114,8 @@ export default function WoodenBox({ position = [0, 0, 0] }: BoxProps) {
 
         {/* Animated wooden lid */}
         <animated.group
-          position={lidSpring.position}
-          rotation={lidSpring.rotation}
+          position={lidSpring.position as unknown as [number, number, number]}
+          rotation={lidSpring.rotation as unknown as [number, number, number]}
         >
           <mesh scale={[1.31, 0.15, 1.12]}>
             <boxGeometry args={[1, 1, 1]} />

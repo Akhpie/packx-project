@@ -188,30 +188,34 @@ const CaseStudies: React.FC = () => {
   // Function to handle selecting a case study
   const handleSelectStudy = (study: CaseStudy) => {
     setSelectedStudy(study);
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = "hidden";
   };
 
   // Function to close the detailed view
   const handleCloseDetailedView = () => {
     setSelectedStudy(null);
+    // Restore body scrolling when modal is closed
+    document.body.style.overflow = "auto";
   };
 
   return (
     <div className="bg-black text-white min-h-screen">
       {/* Hero section */}
-      <section className="pt-32 pb-16 px-4">
+      <section className="pt-32 md:pt-32 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
               Our Case{" "}
               <span className="bg-gradient-to-r from-emerald-400 to-teal-600 text-transparent bg-clip-text">
                 Studies
               </span>
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mb-10">
+            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mb-6 md:mb-10">
               Explore our successful packaging solutions across various
               industries. See how we've helped businesses overcome challenges
               and achieve remarkable results.
@@ -221,7 +225,7 @@ const CaseStudies: React.FC = () => {
       </section>
 
       {/* Filter and case studies section */}
-      <section className="py-16 px-4 bg-gradient-to-b from-black to-emerald-950/30">
+      <section className="py-10 md:py-16 px-4 bg-gradient-to-b from-black to-emerald-950/30">
         <div className="max-w-7xl mx-auto">
           {/* Case Studies Filter */}
           <motion.div
@@ -229,38 +233,38 @@ const CaseStudies: React.FC = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="mb-12"
+            className="mb-8 md:mb-12"
           >
             <Tabs defaultValue="all" className="w-full">
-              <div className="flex justify-center mb-8">
-                <TabsList className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 p-1">
+              <div className="flex mb-6 overflow-x-auto px-1 py-2 w-full">
+                <TabsList className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 p-1 flex-nowrap min-w-min mx-auto">
                   <TabsTrigger
                     value="all"
-                    className="data-[state=active]:bg-emerald-600"
+                    className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     All
                   </TabsTrigger>
                   <TabsTrigger
                     value="sustainability"
-                    className="data-[state=active]:bg-emerald-600"
+                    className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     Sustainability
                   </TabsTrigger>
                   <TabsTrigger
                     value="food"
-                    className="data-[state=active]:bg-emerald-600"
+                    className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     Food & Beverage
                   </TabsTrigger>
                   <TabsTrigger
                     value="ecommerce"
-                    className="data-[state=active]:bg-emerald-600"
+                    className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     E-Commerce
                   </TabsTrigger>
                   <TabsTrigger
                     value="other"
-                    className="data-[state=active]:bg-emerald-600"
+                    className="data-[state=active]:bg-emerald-600 whitespace-nowrap text-xs md:text-sm px-3"
                   >
                     Other
                   </TabsTrigger>
@@ -269,7 +273,7 @@ const CaseStudies: React.FC = () => {
 
               {/* All case studies content */}
               <TabsContent value="all">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {caseStudies.map((study, index) => (
                     <motion.div
                       key={study.id}
@@ -281,20 +285,20 @@ const CaseStudies: React.FC = () => {
                       onClick={() => handleSelectStudy(study)}
                     >
                       <Card className="overflow-hidden h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-emerald-500/50 transition-all duration-300">
-                        <CardContent className="p-6">
-                          <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                        <CardContent className="p-4 md:p-6">
+                          <Badge className="mb-2 md:mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
                             {study.category}
                           </Badge>
-                          <h3 className="text-xl font-bold text-white mb-3">
+                          <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">
                             {study.title}
                           </h3>
-                          <p className="text-gray-300 mb-4 line-clamp-3">
+                          <p className="text-sm md:text-base text-gray-300 mb-3 md:mb-4 line-clamp-3">
                             {study.problem}
                           </p>
-                          <div className="flex items-center text-emerald-400">
+                          <div className="flex items-center text-emerald-400 text-sm md:text-base">
                             <span>Read case study</span>
                             <svg
-                              className="w-4 h-4 ml-2"
+                              className="w-3 h-3 md:w-4 md:h-4 ml-2"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -319,7 +323,7 @@ const CaseStudies: React.FC = () => {
               {["sustainability", "food", "ecommerce", "other"].map(
                 (category) => (
                   <TabsContent key={category} value={category}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                       {caseStudies
                         .filter((study) =>
                           category === "other"
@@ -339,20 +343,20 @@ const CaseStudies: React.FC = () => {
                             onClick={() => handleSelectStudy(study)}
                           >
                             <Card className="overflow-hidden h-full bg-white/5 backdrop-blur-sm border border-white/10 hover:border-emerald-500/50 transition-all duration-300">
-                              <CardContent className="p-6">
-                                <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                              <CardContent className="p-4 md:p-6">
+                                <Badge className="mb-2 md:mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
                                   {study.category}
                                 </Badge>
-                                <h3 className="text-xl font-bold text-white mb-3">
+                                <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3">
                                   {study.title}
                                 </h3>
-                                <p className="text-gray-300 mb-4 line-clamp-3">
+                                <p className="text-sm md:text-base text-gray-300 mb-3 md:mb-4 line-clamp-3">
                                   {study.problem}
                                 </p>
-                                <div className="flex items-center text-emerald-400">
+                                <div className="flex items-center text-emerald-400 text-sm md:text-base">
                                   <span>Read case study</span>
                                   <svg
-                                    className="w-4 h-4 ml-2"
+                                    className="w-3 h-3 md:w-4 md:h-4 ml-2"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -381,28 +385,28 @@ const CaseStudies: React.FC = () => {
 
       {/* Selected Case Study Modal */}
       {selectedStudy && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 md:p-4 overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 rounded-xl p-4 md:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-4 md:mb-6">
               <div>
-                <Badge className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                <Badge className="mb-2 md:mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
                   {selectedStudy.category}
                 </Badge>
-                <h2 className="text-2xl md:text-3xl font-bold text-white">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white pr-6">
                   {selectedStudy.title}
                 </h2>
               </div>
               <button
                 onClick={handleCloseDetailedView}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 hover:text-white transition-colors p-1 -mt-1 -mr-1"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 md:w-6 md:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -418,48 +422,56 @@ const CaseStudies: React.FC = () => {
               </button>
             </div>
 
-            <div className="space-y-6 mb-8">
+            <div className="space-y-4 md:space-y-6 mb-6 md:mb-8">
               <div>
-                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                <h3 className="text-base md:text-lg font-semibold text-emerald-400 mb-1 md:mb-2">
                   The Challenge
                 </h3>
-                <p className="text-gray-300">{selectedStudy.problem}</p>
+                <p className="text-sm md:text-base text-gray-300">
+                  {selectedStudy.problem}
+                </p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                <h3 className="text-base md:text-lg font-semibold text-emerald-400 mb-1 md:mb-2">
                   Our Solution
                 </h3>
-                <p className="text-gray-300">{selectedStudy.solution}</p>
+                <p className="text-sm md:text-base text-gray-300">
+                  {selectedStudy.solution}
+                </p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                <h3 className="text-base md:text-lg font-semibold text-emerald-400 mb-1 md:mb-2">
                   The Outcome
                 </h3>
-                <p className="text-gray-300">{selectedStudy.outcome}</p>
+                <p className="text-sm md:text-base text-gray-300">
+                  {selectedStudy.outcome}
+                </p>
               </div>
             </div>
 
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">
               Key Metrics
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6">
               {selectedStudy.metrics.map((metric, index) => (
                 <div
                   key={index}
-                  className="bg-black/30 border border-gray-800 rounded-lg p-4 text-center"
+                  className="bg-black/30 border border-gray-800 rounded-lg p-3 md:p-4 text-center"
                 >
-                  <div className="text-2xl font-bold text-emerald-400 mb-1">
+                  <div className="text-xl md:text-2xl font-bold text-emerald-400 mb-1">
                     {metric.value}
                   </div>
-                  <div className="text-sm text-gray-400">{metric.label}</div>
+                  <div className="text-xs md:text-sm text-gray-400">
+                    {metric.label}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex justify-end mt-8">
+            <div className="flex justify-end mt-6 md:mt-8">
               <button
                 onClick={handleCloseDetailedView}
-                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+                className="px-4 py-2 md:px-6 md:py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm md:text-base"
               >
                 Close
               </button>
@@ -469,7 +481,7 @@ const CaseStudies: React.FC = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-t from-black to-emerald-950/30">
+      <section className="py-12 md:py-16 px-4 bg-gradient-to-t from-black to-emerald-950/30">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -478,17 +490,17 @@ const CaseStudies: React.FC = () => {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">
               Ready to Transform Your Packaging?
             </h2>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-base md:text-xl text-gray-300 mb-6 md:mb-8 max-w-3xl mx-auto">
               Let's work together to create packaging solutions that enhance
               your products, delight your customers, and align with your
               sustainability goals.
             </p>
             <Link
               to="/contact"
-              className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors inline-block font-medium"
+              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors inline-block font-medium text-sm md:text-base"
             >
               Contact Us Today
             </Link>

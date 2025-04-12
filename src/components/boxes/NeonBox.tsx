@@ -27,15 +27,19 @@ export function NeonBox({ position = [0, 0, 0] }: BoxProps) {
 
   // Box animation
   const springs = useSpring({
-    from: { scale: [0, 0, 0] },
-    to: { scale: [1, 1, 1] },
+    from: { scale: [0, 0, 0] as [number, number, number] },
+    to: { scale: [1, 1, 1] as [number, number, number] },
     config: { mass: 2, tension: 350, friction: 40 },
   });
 
   // Lid animation - fast snap
   const lidSpring = useSpring({
-    rotation: isOpen ? [0, MathUtils.degToRad(180), 0] : [0, 0, 0],
-    position: isOpen ? [0, 0.6, 0] : [0, 0.6, 0],
+    rotation: isOpen
+      ? ([0, MathUtils.degToRad(180), 0] as [number, number, number])
+      : ([0, 0, 0] as [number, number, number]),
+    position: isOpen
+      ? ([0, 0.6, 0] as [number, number, number])
+      : ([0, 0.6, 0] as [number, number, number]),
     config: { mass: 0.8, tension: 500, friction: 15 }, // Quick, responsive
   });
 
@@ -95,7 +99,7 @@ export function NeonBox({ position = [0, 0, 0] }: BoxProps) {
   return (
     <animated.group
       ref={groupRef}
-      scale={springs.scale}
+      scale={springs.scale as unknown as [number, number, number]}
       position={position}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
@@ -160,8 +164,8 @@ export function NeonBox({ position = [0, 0, 0] }: BoxProps) {
 
         {/* Animated lid with neon trim */}
         <animated.group
-          position={lidSpring.position}
-          rotation={lidSpring.rotation}
+          position={lidSpring.position as unknown as [number, number, number]}
+          rotation={lidSpring.rotation as unknown as [number, number, number]}
         >
           <mesh scale={[1.42, 0.15, 1.22]}>
             <boxGeometry args={[1, 1, 1]} />

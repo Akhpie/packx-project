@@ -604,7 +604,7 @@ export const Solutions: React.FC = () => {
         "Temperature resistance",
         "Custom windows for visibility",
       ],
-      logo: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1215&q=80",
+      logo: "https://www.3pconsultants.co.in/wp-content/uploads/2022/10/food-and-beverages.jpg",
     },
     {
       industry: "Cosmetics & Beauty",
@@ -618,7 +618,7 @@ export const Solutions: React.FC = () => {
         "Custom color matching",
         "Eco-friendly alternatives",
       ],
-      logo: "https://images.unsplash.com/photo-1599305090598-fe179d501227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+      logo: "https://burst.shopifycdn.com/photos/makeup-beauty-flatlay.jpg?width=1000&format=pjpg&exif=0&iptc=0",
     },
     {
       industry: "E-Commerce",
@@ -632,7 +632,7 @@ export const Solutions: React.FC = () => {
         "Automated assembly compatible",
         "Letterbox-friendly options",
       ],
-      logo: "https://images.unsplash.com/photo-1627634777217-c864268db30f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      logo: "https://ebz-static.s3.ap-south-1.amazonaws.com/easebuzz-static/upi-credit-cards-v1.png",
     },
   ];
 

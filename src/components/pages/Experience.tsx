@@ -4,18 +4,17 @@ import { OrbitControls, Environment, Stars, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import { Home } from "lucide-react";
+import { ScrollableBox } from "../boxes";
 
 const HomeButton: React.FC = () => {
   const handleHomeClick = () => {
-    // Exit fullscreen if enabled
     if (document.fullscreenElement) {
       document.exitFullscreen().catch((err) => {
         console.error("Error exiting fullscreen:", err);
       });
     }
 
-    // Navigate to the homepage
-    window.location.href = "/"; // Adjust this if your homepage has a different path
+    window.location.href = "/";
   };
 
   return (
@@ -107,23 +106,6 @@ const GeometricBox: React.FC<{ position: [number, number, number] }> = ({
     <meshStandardMaterial color="#4682B4" roughness={0.4} metalness={0.6} />
   </mesh>
 );
-
-const ScrollableBox: React.FC<{ position: [number, number, number] }> = ({
-  position,
-}) => (
-  <mesh position={position} castShadow receiveShadow>
-    <boxGeometry args={[1, 1, 1]} />
-    <meshStandardMaterial
-      color="#22dd88"
-      emissive="#22dd88"
-      emissiveIntensity={0.3}
-      roughness={0.4}
-      metalness={0.7}
-    />
-  </mesh>
-);
-
-// First-person camera controls
 interface KeyState {
   forward: boolean;
   backward: boolean;
@@ -141,10 +123,8 @@ const PlayerControls: React.FC = () => {
     right: false,
   });
 
-  // This will store our direction
   const direction = useRef(new THREE.Vector3());
 
-  // Set up key listeners
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Update key states
@@ -428,13 +408,18 @@ const FactorySetup: React.FC = () => {
               emissiveIntensity={2}
             />
           </mesh>
-          <pointLight
-            intensity={1}
-            distance={10}
-            decay={2}
-            color={"#ffffaa"}
-            castShadow
-          />
+          <group position={[0, 0, 0]}>
+            <mesh>
+              <sphereGeometry args={[0.05, 8, 8]} />
+              <meshStandardMaterial
+                color="#ffffaa"
+                emissive="#ffffaa"
+                emissiveIntensity={2}
+              />
+            </mesh>
+            {/* Simulate light */}
+            <ambientLight color="#ffffaa" intensity={0.5} />
+          </group>
         </group>
       ))}
     </group>
@@ -492,18 +477,22 @@ const SpawnPlatform: React.FC = () => {
           anchorX="center"
           anchorY="middle"
         >
-          SPAWN POINT
+          EXPLORE
         </Text>
       </group>
 
       {/* Light above spawn */}
-      <pointLight
-        position={[0, 4, 0]}
-        intensity={1}
-        color="#00ffaa"
-        distance={10}
-        decay={2}
-      />
+      <group position={[0, 4, 0]}>
+        <mesh>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshStandardMaterial
+            color="#00ffaa"
+            emissive="#00ffaa"
+            emissiveIntensity={2}
+          />
+        </mesh>
+        <ambientLight color="#00ffaa" intensity={0.5} />
+      </group>
     </group>
   );
 };
@@ -610,13 +599,23 @@ const BoxDisplay: React.FC = () => {
                 metalness={0.8}
               />
             </mesh>
-            <pointLight
-              intensity={2}
-              distance={5}
-              decay={2}
-              color={i === 0 ? "#ff6666" : i === 1 ? "#66ffff" : "#ffff66"}
-              castShadow
-            />
+            <group>
+              <mesh>
+                <sphereGeometry args={[0.05, 8, 8]} />
+                <meshStandardMaterial
+                  color={i === 0 ? "#ff6666" : i === 1 ? "#66ffff" : "#ffff66"}
+                  emissive={
+                    i === 0 ? "#ff6666" : i === 1 ? "#66ffff" : "#ffff66"
+                  }
+                  emissiveIntensity={2}
+                />
+              </mesh>
+              {/* Simulate light */}
+              <ambientLight
+                color={i === 0 ? "#ff6666" : i === 1 ? "#66ffff" : "#ffff66"}
+                intensity={0.8}
+              />
+            </group>
           </group>
         ))}
       </group>
@@ -809,20 +808,29 @@ const Experience: React.FC = () => {
         />
 
         {/* Colored accent lights */}
-        <pointLight
-          position={[-15, 8, -15]}
-          intensity={0.8}
-          color="#6666ff"
-          distance={20}
-          decay={2}
-        />
-        <pointLight
-          position={[15, 8, -15]}
-          intensity={0.8}
-          color="#66ff66"
-          distance={20}
-          decay={2}
-        />
+        <group position={[-15, 8, -15]}>
+          <mesh>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial
+              color="#6666ff"
+              emissive="#6666ff"
+              emissiveIntensity={2}
+            />
+          </mesh>
+          <ambientLight color="#6666ff" intensity={0.4} />
+        </group>
+
+        <group position={[15, 8, -15]}>
+          <mesh>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial
+              color="#66ff66"
+              emissive="#66ff66"
+              emissiveIntensity={2}
+            />
+          </mesh>
+          <ambientLight color="#66ff66" intensity={0.4} />
+        </group>
 
         <FactoryWalls />
         <Floor />

@@ -34,15 +34,19 @@ export function LuxuryBox({
 
   // Box animation
   const springs = useSpring({
-    from: { scale: [0, 0, 0] },
-    to: { scale: [1, 1, 1] },
+    from: { scale: [0, 0, 0] as [number, number, number] },
+    to: { scale: [1, 1, 1] as [number, number, number] },
     config: { mass: 5, tension: 400, friction: 50 },
   });
 
   // Lid animation
   const lidSpring = useSpring({
-    rotation: isOpen ? [MathUtils.degToRad(-90), 0, 0] : [0, 0, 0],
-    position: isOpen ? [0, 1.6, -0.9] : [0, 0.9, 0],
+    rotation: isOpen
+      ? ([MathUtils.degToRad(-90), 0, 0] as [number, number, number])
+      : ([0, 0, 0] as [number, number, number]),
+    position: isOpen
+      ? ([0, 1.6, -0.9] as [number, number, number])
+      : ([0, 0.9, 0] as [number, number, number]),
     config: { mass: 2, tension: 200, friction: 40 },
   });
 
@@ -59,7 +63,7 @@ export function LuxuryBox({
   return (
     <animated.group
       ref={groupRef}
-      scale={springs.scale}
+      scale={springs.scale as unknown as [number, number, number]}
       position={position}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
@@ -111,8 +115,8 @@ export function LuxuryBox({
 
         {/* Animated Lid with gold inlay */}
         <animated.group
-          position={lidSpring.position}
-          rotation={lidSpring.rotation}
+          position={lidSpring.position as unknown as [number, number, number]}
+          rotation={lidSpring.rotation as unknown as [number, number, number]}
         >
           <RoundedBox args={[1.55, 0.2, 1.55]} radius={0.08} smoothness={4}>
             <meshPhysicalMaterial

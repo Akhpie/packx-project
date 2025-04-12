@@ -208,6 +208,8 @@ const Navbar: React.FC = () => {
                       className={`px-4 py-2 rounded-full transition-colors duration-300 text-sm ${
                         isActive(item.path)
                           ? "bg-emerald-600 text-white"
+                          : item.name === "Experience"
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700"
                           : "text-gray-300 hover:bg-white/10"
                       }`}
                     >
@@ -237,6 +239,8 @@ const Navbar: React.FC = () => {
                     className={`block px-3 py-2 rounded-lg w-full text-left ${
                       isActive(item.path)
                         ? "bg-emerald-600 text-white"
+                        : item.name === "Experience"
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
                         : "text-gray-300 hover:bg-white/10"
                     }`}
                   >

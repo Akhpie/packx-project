@@ -26,17 +26,21 @@ export function HolographicBox({ position = [0, 0, 0] }: BoxProps) {
   const [colorPhase, setColorPhase] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Box animation
+  // Box animation - fixed to use object format for scale
   const springs = useSpring({
-    from: { scale: [0, 0, 0] },
-    to: { scale: [1, 1, 1] },
+    from: { scale: [0, 0, 0] as [number, number, number] },
+    to: { scale: [1, 1, 1] as [number, number, number] },
     config: { mass: 3, tension: 380, friction: 40 },
   });
 
-  // Lid animation
+  // Lid animation - fixed to use proper types
   const lidSpring = useSpring({
-    rotation: isOpen ? [0, MathUtils.degToRad(180), 0] : [0, 0, 0],
-    position: isOpen ? [0, 0.7, 0] : [0, 0.65, 0],
+    rotation: isOpen
+      ? ([0, MathUtils.degToRad(180), 0] as [number, number, number])
+      : ([0, 0, 0] as [number, number, number]),
+    position: isOpen
+      ? ([0, 0.7, 0] as [number, number, number])
+      : ([0, 0.65, 0] as [number, number, number]),
     config: { mass: 0.5, tension: 300, friction: 20 },
   });
 
@@ -83,7 +87,11 @@ export function HolographicBox({ position = [0, 0, 0] }: BoxProps) {
   });
 
   return (
-    <animated.group ref={groupRef} scale={springs.scale} position={position}>
+    <animated.group
+      ref={groupRef}
+      scale={springs.scale as unknown as [number, number, number]}
+      position={position}
+    >
       <group>
         {/* Main container with distortion effect */}
         <mesh scale={[1.3, 1.1, 1.3]} position={[0, 0, 0]}>
@@ -122,8 +130,8 @@ export function HolographicBox({ position = [0, 0, 0] }: BoxProps) {
 
         {/* Animated holographic lid */}
         <animated.group
-          position={lidSpring.position}
-          rotation={lidSpring.rotation}
+          position={lidSpring.position as unknown as [number, number, number]}
+          rotation={lidSpring.rotation as unknown as [number, number, number]}
         >
           <mesh scale={[1.35, 0.2, 1.35]}>
             <boxGeometry args={[1, 1, 1]} />
