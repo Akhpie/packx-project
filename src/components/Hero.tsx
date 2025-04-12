@@ -9,13 +9,83 @@ import {
   Float,
   Environment,
 } from "@react-three/drei";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 import { Globe } from "./magicui/globe";
 import { AuroraText } from "./magicui/aurora-text";
 import { ShineBorder } from "./magicui/shine-border";
 import { Card, CardHeader } from "./ui/card";
 import { Meteors } from "./magicui/meteors";
+
+// Mobile notification interface
+interface MobileNotificationProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+// Mobile notification component (same as in Navbar)
+const MobileNotification: React.FC<MobileNotificationProps> = ({
+  isVisible,
+  onClose,
+}) => {
+  if (!isVisible) return null;
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 px-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="bg-gradient-to-br from-zinc-900 to-black p-6 rounded-xl border border-emerald-500/30 shadow-xl max-w-sm w-full"
+            initial={{ scale: 0.8, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 20 }}
+            transition={{ type: "spring", damping: 15 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center">
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Desktop Experience Only
+              </h3>
+              <p className="text-gray-300 mb-4">
+                Our 3D experience is optimized for desktop devices with keyboard
+                controls. Please visit on a desktop browser for the full
+                immersive experience.
+              </p>
+              <button
+                onClick={onClose}
+                className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors duration-300"
+              >
+                Got it
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 // Animated grid for the floor
 const AnimatedGrid = () => {
@@ -152,6 +222,22 @@ const LogoText = () => {
 export const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobileNotificationVisible, setIsMobileNotificationVisible] =
+    useState<boolean>(false);
+  const navigate = useNavigate();
+
+  // Check if user is on mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Handle scroll for parallax effect
   useEffect(() => {
@@ -161,6 +247,16 @@ export const Hero = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle the "Take a Virtual Tour" button click
+  const handleVirtualTourClick = (e) => {
+    if (isMobile) {
+      e.preventDefault();
+      setIsMobileNotificationVisible(true);
+    } else {
+      navigate("/experience");
+    }
+  };
 
   return (
     <div
@@ -234,12 +330,13 @@ export const Hero = () => {
             >
               Explore Solutions
             </Link>
-            <Link
-              to="/sustainability"
+            {/* Modified to use onClick handler instead of direct Link navigation */}
+            <button
+              onClick={handleVirtualTourClick}
               className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white border-2 border-white/40 rounded-lg transition-colors text-center font-medium shadow-lg"
             >
-              Our Sustainability Commitment
-            </Link>
+              Take a Virtual Tour
+            </button>
           </motion.div>
 
           {/* Call to action buttons */}
@@ -277,6 +374,12 @@ export const Hero = () => {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Mobile notification for Experience page */}
+      <MobileNotification
+        isVisible={isMobileNotificationVisible}
+        onClose={() => setIsMobileNotificationVisible(false)}
+      />
     </div>
   );
 };
