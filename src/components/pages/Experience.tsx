@@ -673,9 +673,6 @@ const ControlsOverlay: React.FC<ControlsOverlayProps> = ({
           craft and manufacture our premium boxes. Explore the production floor
           and see how our boxes are made!
         </p>
-        <p className="mb-4 text-center">
-          For the best experience, please view on Desktop.
-        </p>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="bg-black/50 p-3 rounded-lg">
             <h3 className="text-sm font-semibold mb-2 text-emerald-400">

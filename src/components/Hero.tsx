@@ -1,20 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  PerspectiveCamera,
-  Stars,
-  useTexture,
-  Text3D,
-  Float,
-  Environment,
-} from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Globe } from "./magicui/globe";
-import { AuroraText } from "./magicui/aurora-text";
-import { ShineBorder } from "./magicui/shine-border";
-import { Card, CardHeader } from "./ui/card";
 import { Meteors } from "./magicui/meteors";
 
 // Mobile notification interface
@@ -87,138 +74,6 @@ const MobileNotification: React.FC<MobileNotificationProps> = ({
   );
 };
 
-// Animated grid for the floor
-const AnimatedGrid = () => {
-  const gridRef = useRef();
-
-  useFrame(({ clock }) => {
-    if (gridRef.current) {
-      const t = clock.getElapsedTime();
-      gridRef.current.position.z = (t * 0.5) % 5;
-    }
-  });
-
-  return (
-    <group
-      position={[0, -12, -40]}
-      rotation={[-Math.PI / 2.5, 0, 0]}
-      ref={gridRef}
-    >
-      {Array.from({ length: 20 }).map((_, i) => (
-        <line key={`grid-x-${i}`}>
-          <bufferGeometry attach="geometry">
-            <bufferAttribute
-              attachObject={["attributes", "position"]}
-              count={2}
-              array={new Float32Array([-50, i * 5 - 50, 0, 50, i * 5 - 50, 0])}
-              itemSize={3}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial
-            color="#00d87d"
-            transparent
-            opacity={0.15 + (i / 20) * 0.2}
-          />
-        </line>
-      ))}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <line key={`grid-y-${i}`}>
-          <bufferGeometry attach="geometry">
-            <bufferAttribute
-              attachObject={["attributes", "position"]}
-              count={2}
-              array={new Float32Array([i * 5 - 50, -50, 0, i * 5 - 50, 50, 0])}
-              itemSize={3}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial
-            color="#00d87d"
-            transparent
-            opacity={0.15 + (i / 20) * 0.2}
-          />
-        </line>
-      ))}
-    </group>
-  );
-};
-
-// Animated particles effect
-const Particles = ({ count = 500 }) => {
-  const mesh = useRef();
-  const [positions] = useState(() => {
-    const positions = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 50;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 50 - 10;
-    }
-    return positions;
-  });
-
-  useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
-    mesh.current.rotation.y = time * 0.05;
-    mesh.current.rotation.x = time * 0.03;
-  });
-
-  return (
-    <points ref={mesh}>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={["attributes", "position"]}
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.1}
-        color="#00ff88"
-        sizeAttenuation
-        transparent
-        opacity={0.8}
-      />
-    </points>
-  );
-};
-
-// 3D logo text
-const LogoText = () => {
-  const textRef = useRef();
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    textRef.current.position.y = Math.sin(t * 0.5) * 0.2;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0} floatIntensity={0.5}>
-      <group ref={textRef} position={[0, 0, -5]}>
-        <Text3D
-          font="/fonts/inter_bold.json"
-          size={1.5}
-          height={0.2}
-          curveSegments={12}
-          bevelEnabled
-          bevelThickness={0.02}
-          bevelSize={0.02}
-          bevelOffset={0}
-          bevelSegments={5}
-        >
-          PACKX
-          <meshStandardMaterial
-            color="#00ff88"
-            emissive="#00ff88"
-            emissiveIntensity={0.5}
-            metalness={0.8}
-            roughness={0.2}
-          />
-        </Text3D>
-      </group>
-    </Float>
-  );
-};
-
 export const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -249,7 +104,7 @@ export const Hero = () => {
   }, []);
 
   // Handle the "Take a Virtual Tour" button click
-  const handleVirtualTourClick = (e) => {
+  const handleVirtualTourClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isMobile) {
       e.preventDefault();
       setIsMobileNotificationVisible(true);
